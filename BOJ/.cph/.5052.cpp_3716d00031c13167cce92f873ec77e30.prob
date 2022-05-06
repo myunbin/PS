@@ -1,0 +1,1 @@
+{"name":"Local: 5052","url":"/Users/myunbin/Workspace/PS/BOJ/5052.cpp","tests":[{"id":1649766425730,"input":"2\n3\n911\n97625999\n91125426\n5\n113\n12340\n123440\n12345\n98346","output":"NO\nYES"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"/Users/myunbin/Workspace/PS/BOJ/5052.cpp","group":"local","local":true}

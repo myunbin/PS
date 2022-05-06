@@ -1,0 +1,1 @@
+{"name":"Local: 16496","url":"/Users/myunbin/Workspace/PS/BOJ/16496.cpp","tests":[{"id":1649771159633,"input":"5\n3 30 34 5 9","output":"9534330"},{"id":1649771222418,"input":"5\n0 0 0 0 1","output":"10000"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"/Users/myunbin/Workspace/PS/BOJ/16496.cpp","group":"local","local":true}

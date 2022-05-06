@@ -1,0 +1,1 @@
+{"name":"Local: 10165","url":"/Users/myunbin/Workspace/PS/BOJ/10165.cpp","tests":[{"id":1650186775619,"input":"10\n5\n0 4\n2 6\n5 0\n7 9\n9 4","output":"2 3 5"},{"id":1650186779563,"input":"20\n4\n14 17\n18 3\n8 6\n9 13","output":"3"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"/Users/myunbin/Workspace/PS/BOJ/10165.cpp","group":"local","local":true}

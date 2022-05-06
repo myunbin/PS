@@ -1,0 +1,1 @@
+{"name":"Local: t","url":"/Users/myunbin/Workspace/PS/BOJ/t.cpp","tests":[{"id":1647701685410,"input":"4 6\n101111\n101010\n101011\n111011","output":"15"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"/Users/myunbin/Workspace/PS/BOJ/t.cpp","group":"local","local":true}

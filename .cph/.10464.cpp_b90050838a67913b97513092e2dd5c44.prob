@@ -1,0 +1,1 @@
+{"name":"Local: 10464","url":"/Users/myunbin/Workspace/PS/10464.cpp","tests":[{"id":1649271273308,"input":"5\n3 10\n5 5\n13 42\n666 1337\n1234567 89101112","output":"8\n5\n39\n0\n89998783"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"/Users/myunbin/Workspace/PS/10464.cpp","group":"local","local":true}
