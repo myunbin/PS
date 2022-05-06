@@ -36,6 +36,7 @@ const int MAX = 11; // PLZ CHK!
 
 int n,m,d[MAX][(1<<MAX)+1];
 string a[MAX];
+//asdfasdfasdfasdfadsf
 
 int go(int i, int s) {
     if (i>n) return 0;
