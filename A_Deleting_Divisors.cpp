@@ -9,7 +9,7 @@ using namespace std;
 #define all(x) (x).begin(), (x).end()
 #define allr(x) x.rbegin(), x.rend()
 #define cmprs(x) sort(all(x)),x.erase(unique(all(x)),x.end())
-// #define endl "\n"
+#define endl "\n"
 #define sp " "
 #define pb push_back
 #define lb lower_bound
@@ -35,7 +35,29 @@ const ll LINF = 0x3f3f3f3f3f3f3f3f;
 const int MAX = 101010; // PLZ CHK!
 
 void solve() {
+    int n;
+    cin>>n;
+    if (n==1) {
+        cout<<"Bob\n";
+        return;
+    }
+
+    vector<int> a;
+    bool f0=0, f1=0;
+    int c=0;
+    while (!(n&1)) {
+        f0=1;
+        c++;
+        n>>=1;
+    }
+    if (n>1) f1=1;
     
+    if (!f0 && f1) cout<<"Bob\n";
+    else if (f0 && f1) cout<<"Alice\n";
+    else {
+        if (!(c&1)) cout<<"Alice\n";
+        else cout<<"Bob\n";
+    }
 }
 int main() {
     fio();
