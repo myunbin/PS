@@ -29,38 +29,27 @@ typedef tuple<ll, ll, ll> tpl;
 typedef pair<double, ll> pdl;
 typedef pair<double, int> pdi;
 
-const ll MOD = 1e9+7;
+const ll MOD = 10000003;
 const int INF = 0x3f3f3f3f;
 const ll LINF = 0x3f3f3f3f3f3f3f3f;
 const int MAX = 101010; // PLZ CHK!
 
-void solve() {
-    int n,k; cin >> n >> k;
-    string s; cin >> s;
-
-    int mx=0;
-    for (int i=0; i<n; i++) {
-        if (k<s[i]-'a') {
-            k-=mx;
-            char st=s[i], to=s[i]-k;
-            for (char c = st; c > to; c--) {
-                for (char &e:s) {
-                    if (e==c) e = char(c-1);
-                }
-            }
-            break;
-        } 
-        mx=max(mx, s[i]-'a');
-    }
-    for (char &e:s) {
-        if (e-'a'<=mx) e = 'a';
-    } 
-    cout<<s<<endl;
-}
 int main() {
     fio();
-    int t;
-    cin>>t;
-    while (t--) solve();
+    int n;
+    cin>>n;
+    vector<ll> a(n);
+    for (ll &x:a) cin>>x;
+    sort(all(a));
+
+    ll d[55][MAX]={0};
+    d[0][a[0]]=1;
+    for (int i=1; i<n; i++) {
+        d[i][a[i]]=1;
+        for (int j=1; j<=a[i]; j++) d[i][j]=(d[i][j]+d[i-1][j])%MOD;
+        for (int j=1; j<=a[i]; j++) d[i][gcd(j,a[i])]=(d[i][gcd(j,a[i])]+d[i-1][j])%MOD;
+    }
+
+    cout<<d[n-1][1];
     return 0;
 }

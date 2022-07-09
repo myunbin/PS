@@ -29,38 +29,25 @@ typedef tuple<ll, ll, ll> tpl;
 typedef pair<double, ll> pdl;
 typedef pair<double, int> pdi;
 
-const ll MOD = 1e9+7;
+const ll MOD = 1e9;
 const int INF = 0x3f3f3f3f;
 const ll LINF = 0x3f3f3f3f3f3f3f3f;
-const int MAX = 101010; // PLZ CHK!
+const int MAX = 1010101; // PLZ CHK!
 
-void solve() {
-    int n,k; cin >> n >> k;
-    string s; cin >> s;
-
-    int mx=0;
-    for (int i=0; i<n; i++) {
-        if (k<s[i]-'a') {
-            k-=mx;
-            char st=s[i], to=s[i]-k;
-            for (char c = st; c > to; c--) {
-                for (char &e:s) {
-                    if (e==c) e = char(c-1);
-                }
-            }
-            break;
-        } 
-        mx=max(mx, s[i]-'a');
-    }
-    for (char &e:s) {
-        if (e-'a'<=mx) e = 'a';
-    } 
-    cout<<s<<endl;
-}
 int main() {
     fio();
-    int t;
-    cin>>t;
-    while (t--) solve();
+    int n;
+    cin>>n;
+    
+    ll d[MAX]={0};
+    d[0]=1;
+    
+    for (int i=0; (1<<i)<=n; i++) {
+        for (int j=(1<<i); j<=n; j++) {
+            d[j]=(d[j]+d[j-(1<<i)])%MOD;
+        }
+    }
+    
+    cout<<d[n];
     return 0;
 }

@@ -35,31 +35,60 @@ const ll LINF = 0x3f3f3f3f3f3f3f3f;
 const int MAX = 101010; // PLZ CHK!
 
 void solve() {
-    int n,k; cin >> n >> k;
-    string s; cin >> s;
+    int n;
+    cin>>n;
+    string a,b;
+    cin>>a>>b;
 
-    int mx=0;
+    int cnt[2][3]={0};
     for (int i=0; i<n; i++) {
-        if (k<s[i]-'a') {
-            k-=mx;
-            char st=s[i], to=s[i]-k;
-            for (char c = st; c > to; c--) {
-                for (char &e:s) {
-                    if (e==c) e = char(c-1);
-                }
-            }
-            break;
-        } 
-        mx=max(mx, s[i]-'a');
+        cnt[0][a[i]-'a']++, cnt[1][b[i]-'a']++;
+    }    
+    for (int i=0; i<3; i++) {
+        if (cnt[0][i]!=cnt[1][i]) {
+            cout<<"NO\n";
+            return;
+        }
     }
-    for (char &e:s) {
-        if (e-'a'<=mx) e = 'a';
-    } 
-    cout<<s<<endl;
+
+    int i=0, j=0; 
+    while (i<n) {
+        if (a[i]=='b') {
+            i++;
+            continue;
+        }
+
+        while (j<n && b[j]=='b') j++;
+
+        if (j>=n) {
+            cout<<"NO\n";
+            return;
+        }
+
+        if (a[i]!=b[j]) {
+            cout<<"NO\n";
+            return;
+        }
+        
+        if (a[i]=='a' && i>j) {
+            cout<<"NO\n";
+            return;
+        }
+
+        if (a[i]=='c' && i<j) {
+            cout<<"NO\n";
+            return;
+        }
+
+        i++, j++;
+    }
+
+    cout<<"YES\n";
 }
+
 int main() {
     fio();
-    int t;
+    int t; 
     cin>>t;
     while (t--) solve();
     return 0;

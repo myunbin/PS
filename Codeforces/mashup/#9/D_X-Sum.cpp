@@ -35,27 +35,45 @@ const ll LINF = 0x3f3f3f3f3f3f3f3f;
 const int MAX = 101010; // PLZ CHK!
 
 void solve() {
-    int n,k; cin >> n >> k;
-    string s; cin >> s;
-
-    int mx=0;
+    int n,m;
+    cin>>n>>m;
+    vector<vector<int>> a(n,vector<int>(m,0));
     for (int i=0; i<n; i++) {
-        if (k<s[i]-'a') {
-            k-=mx;
-            char st=s[i], to=s[i]-k;
-            for (char c = st; c > to; c--) {
-                for (char &e:s) {
-                    if (e==c) e = char(c-1);
-                }
-            }
-            break;
-        } 
-        mx=max(mx, s[i]-'a');
+        for (int j=0; j<m; j++) {
+            cin>>a[i][j];
+        }
     }
-    for (char &e:s) {
-        if (e-'a'<=mx) e = 'a';
-    } 
-    cout<<s<<endl;
+
+    int ans=0;
+    for (int i=0; i<n; i++) {
+        for (int j=0; j<m; j++) {
+            int sum=0;
+            int x=i, y=j;
+            while (x>=0&&x<n && y>=0&&y<m) {
+                sum+=a[x][y];
+                x++,y++;
+            }
+            x=i, y=j;
+            while (x>=0&&x<n && y>=0&&y<m) {
+                sum+=a[x][y];
+                x++,y--;   
+            }
+            x=i, y=j;
+            while (x>=0&&x<n && y>=0&&y<m) {
+                sum+=a[x][y];
+                x--,y++;
+            }
+            x=i, y=j;
+            while (x>=0&&x<n && y>=0&&y<m) {
+                sum+=a[x][y];
+                x--,y--;
+            }
+            sum-=3*a[i][j];
+
+            ans=max(ans,sum);
+        }
+    }
+    cout<<ans<<endl;
 }
 int main() {
     fio();

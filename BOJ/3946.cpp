@@ -32,34 +32,33 @@ typedef pair<double, int> pdi;
 const ll MOD = 1e9+7;
 const int INF = 0x3f3f3f3f;
 const ll LINF = 0x3f3f3f3f3f3f3f3f;
-const int MAX = 101010; // PLZ CHK!
+const int MAX = 1010; // PLZ CHK!
 
+int n;
+double l,r;
+double d[MAX][MAX];
+
+double go(int i, int j) {
+    if (i==0) return j;
+    double &ret=d[i][j];
+    if (ret!=INF) return ret;
+
+    ret=(1-l-r)*go(i-1,j);
+    ret+=r*(go(i-1,max(0,j-1))+1);
+    ret+=l*(go(i-1,j+1)-1);
+    
+    return ret;
+}
 void solve() {
-    int n,k; cin >> n >> k;
-    string s; cin >> s;
-
-    int mx=0;
-    for (int i=0; i<n; i++) {
-        if (k<s[i]-'a') {
-            k-=mx;
-            char st=s[i], to=s[i]-k;
-            for (char c = st; c > to; c--) {
-                for (char &e:s) {
-                    if (e==c) e = char(c-1);
-                }
-            }
-            break;
-        } 
-        mx=max(mx, s[i]-'a');
-    }
-    for (char &e:s) {
-        if (e-'a'<=mx) e = 'a';
-    } 
-    cout<<s<<endl;
+    for (int i=0; i<MAX; i++) for (int j=0; j<MAX; j++) d[i][j]=(double)INF;
+    cin>>n>>l>>r;
+    cout.precision(4);
+    cout<<fixed;
+    cout<<go(n,0)<<endl;
 }
 int main() {
     fio();
-    int t;
+    int t=1;
     cin>>t;
     while (t--) solve();
     return 0;

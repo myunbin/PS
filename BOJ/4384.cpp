@@ -32,35 +32,37 @@ typedef pair<double, int> pdi;
 const ll MOD = 1e9+7;
 const int INF = 0x3f3f3f3f;
 const ll LINF = 0x3f3f3f3f3f3f3f3f;
-const int MAX = 101010; // PLZ CHK!
+const int MAX = 111; // PLZ CHK!
 
-void solve() {
-    int n,k; cin >> n >> k;
-    string s; cin >> s;
-
-    int mx=0;
-    for (int i=0; i<n; i++) {
-        if (k<s[i]-'a') {
-            k-=mx;
-            char st=s[i], to=s[i]-k;
-            for (char c = st; c > to; c--) {
-                for (char &e:s) {
-                    if (e==c) e = char(c-1);
-                }
-            }
-            break;
-        } 
-        mx=max(mx, s[i]-'a');
-    }
-    for (char &e:s) {
-        if (e-'a'<=mx) e = 'a';
-    } 
-    cout<<s<<endl;
-}
 int main() {
     fio();
-    int t;
-    cin>>t;
-    while (t--) solve();
+    int n,s=0;
+    int a[MAX]={0};
+    bool d[MAX/2][MAX*450]={0};
+
+    cin>>n;
+    
+    for (int i=1; i<=n; i++) cin>>a[i], s+=a[i];
+
+    d[0][0]=1;
+    for (int i=1; i<=n; i++) {
+        for (int j=n/2; j>=0; j--) {
+            for (int k=MAX*450-1; k>=a[i]; k--) { 
+                d[j][k]|=d[j-1][k-a[i]];
+            }
+        }
+    }
+
+    int diff=INF;
+    pii ans;
+    for (int i=0; i<MAX*450; i++) {
+        if (d[n/2][i]) {
+            if (diff>abs(s-2*i)) {
+                diff=abs(s-2*i);
+                ans={min(i,s-i), max(i,s-i)};
+            }
+        }
+    }
+    cout<<ans.F<<sp<<ans.S;
     return 0;
 }

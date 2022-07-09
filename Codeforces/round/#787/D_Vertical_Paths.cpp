@@ -34,79 +34,46 @@ const int INF = 0x3f3f3f3f;
 const ll LINF = 0x3f3f3f3f3f3f3f3f;
 const int MAX = 101010; // PLZ CHK!
 
-vector<vector<int>> g;
-vector<int> d,m;
-
-void dfs1(int cur) {
-    for (int nxt:g[cur]) {
-        d[nxt]=d[cur]+1;
-        dfs1(nxt);
-    }
-}
-
-void dfs3(int cur) {
-    m[cur]=d[cur];
-    for (int nxt:g[cur]) {
-        dfs3(nxt);
-        m[cur]=max(m[cur], m[nxt]);
-    }
-}
-
-void dfs2(int cur, vector<int> &ta, vector<vector<int>> &ans) {
-    pii mx={0,0};
-    ta.pb(cur);
-
-    if (g[cur].empty()) {
-        ans.pb(ta);
-        return;
-    }
-
-    for (int nxt:g[cur]) {
-        mx=max(mx, {m[nxt],nxt});
-    }    
-    
-    dfs2(mx.S, ta, ans);
-    
-    for (int nxt:g[cur]) {
-        if (nxt==mx.S) continue;
-        vector<int> t;
-        dfs2(nxt, t, ans);
-    }
-}
-
 void solve() {
     int n;
     cin>>n;
-    vector<vector<int>> ans;
-    g.resize(n+1);
-    d.resize(n+1,0);
-    m.resize(n+1,0);
-
-    int rt;
+    
+    vector<int> lf(n+1,1), p(n+1);
     for (int i=1; i<=n; i++) {
-        int p; cin>>p;
-        if (i==p) rt=p;
-        else g[p].pb(i);
+        cin>>p[i];
+        lf[p[i]]=0;
     }
 
-    dfs1(rt);
-    dfs3(rt);
+    if (n==1) {
+        cout<<1<<endl<<1<<endl<<1<<endl<<endl;
+        return;
+    }
 
-    vector<int> tt;
-    dfs2(rt, tt, ans);
+    
+    vector<int> lff;
+    for (int i=1; i<=n; i++) {
+        if (lf[i]) lff.pb(i);
+    }
+    vector<vector<int>> ans;
+    vector<int> v(n+1,0);
+    for (int x:lff) {
+        vector<int> t;
+        ans.pb(t);
+        while (!v[x]) {
+            v[x]=1;
+            ans.back().pb(x);
+            x=p[x];
+        }
+    }
 
     cout<<sz(ans)<<endl;
     for (auto v:ans) {
-        if (sz(v)==0) continue;
         cout<<sz(v)<<endl;
+        reverse(all(v));
         for (int x:v) cout<<x<<sp;
         cout<<endl;
     }
-
     cout<<endl;
-
-    for (int i=0; i<=n; i++) g[i].clear();
-    d.clear(), m.clear();
 }
 int main() {
     fio();

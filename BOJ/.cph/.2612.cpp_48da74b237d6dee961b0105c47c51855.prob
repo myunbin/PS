@@ -1,0 +1,1 @@
+{"name":"Local: 2612","url":"/Users/myunbin/Workspace/PS/BOJ/2612.cpp","tests":[{"id":1655270775997,"input":"6\nAGTCAG\n5\nATGTG","output":"7\nAGT\nATGT"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"/Users/myunbin/Workspace/PS/BOJ/2612.cpp","group":"local","local":true}

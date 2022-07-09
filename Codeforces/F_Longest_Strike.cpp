@@ -35,27 +35,33 @@ const ll LINF = 0x3f3f3f3f3f3f3f3f;
 const int MAX = 101010; // PLZ CHK!
 
 void solve() {
-    int n,k; cin >> n >> k;
-    string s; cin >> s;
-
-    int mx=0;
+    int n,k;
+    cin>>n>>k;
+    map<int, int> a;
     for (int i=0; i<n; i++) {
-        if (k<s[i]-'a') {
-            k-=mx;
-            char st=s[i], to=s[i]-k;
-            for (char c = st; c > to; c--) {
-                for (char &e:s) {
-                    if (e==c) e = char(c-1);
-                }
-            }
-            break;
-        } 
-        mx=max(mx, s[i]-'a');
+        int x; cin>>x;
+        a[x]++;
     }
-    for (char &e:s) {
-        if (e-'a'<=mx) e = 'a';
-    } 
-    cout<<s<<endl;
+    vector<int> v;
+    for (auto [x,y]:a) {
+        if (k<=y) v.pb(x);
+    }
+
+    if (v.empty()) {
+        cout<<-1<<endl;
+        return;
+    }
+
+    pii ans={0,-1};
+    int p=0;
+    while (p<sz(v)) {
+        int l,r; l=r=v[p];
+        while (p+1<sz(v) && v[p]+1==v[p+1]) p++, r=v[p];
+        if (r-l>ans.S-ans.F) ans={l,r};
+        p++;
+    }
+
+    cout<<ans.F<<sp<<ans.S<<endl;
 }
 int main() {
     fio();

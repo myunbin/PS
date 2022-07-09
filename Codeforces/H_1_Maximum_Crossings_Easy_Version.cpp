@@ -34,32 +34,42 @@ const int INF = 0x3f3f3f3f;
 const ll LINF = 0x3f3f3f3f3f3f3f3f;
 const int MAX = 101010; // PLZ CHK!
 
-void solve() {
-    int n,k; cin >> n >> k;
-    string s; cin >> s;
-
-    int mx=0;
-    for (int i=0; i<n; i++) {
-        if (k<s[i]-'a') {
-            k-=mx;
-            char st=s[i], to=s[i]-k;
-            for (char c = st; c > to; c--) {
-                for (char &e:s) {
-                    if (e==c) e = char(c-1);
-                }
-            }
-            break;
-        } 
-        mx=max(mx, s[i]-'a');
+struct fwt {
+    // 1-indexed!
+    vector<ll> tr;
+    void rst(int n) {tr.resize(n+1);}
+    void upd(int i, ll v) {
+        for (; i<sz(tr); i+=(i&-i)) tr[i]+=v;
     }
-    for (char &e:s) {
-        if (e-'a'<=mx) e = 'a';
-    } 
-    cout<<s<<endl;
+    ll qry(int r) { //[1,r]
+        ll sum=0;
+        for (; r; r-=(r&(-r))) sum+=tr[r];
+        return sum;
+    }
+    ll qry(int l, int r) { //[l, r]
+        if(l==0) return qry(r);
+        return qry(r)-qry(l-1);
+    }
+};
+
+void solve() {
+    int n;
+    cin>>n;
+    vector<int> a(n);
+    for (int &x:a) cin>>x;
+
+    fwt fw; fw.rst(n+10);
+    ll ans=0;
+    for (int x:a) {
+        ans+=fw.qry(x,n);
+        fw.upd(x,1);
+    }
+
+    cout<<ans<<endl;
 }
 int main() {
     fio();
-    int t;
+    int t=1;
     cin>>t;
     while (t--) solve();
     return 0;

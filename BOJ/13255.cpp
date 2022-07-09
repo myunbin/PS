@@ -32,35 +32,37 @@ typedef pair<double, int> pdi;
 const ll MOD = 1e9+7;
 const int INF = 0x3f3f3f3f;
 const ll LINF = 0x3f3f3f3f3f3f3f3f;
-const int MAX = 101010; // PLZ CHK!
+const int MAX = 1010; // PLZ CHK!
+int n,k,a[55];
+double d[55][MAX], c[MAX][MAX];
 
-void solve() {
-    int n,k; cin >> n >> k;
-    string s; cin >> s;
+double go(int i, int j) {
+    if (i==k) return (double)j;
+    double &ret=d[i][j];
+    if (ret>-1.0) return ret;
 
-    int mx=0;
-    for (int i=0; i<n; i++) {
-        if (k<s[i]-'a') {
-            k-=mx;
-            char st=s[i], to=s[i]-k;
-            for (char c = st; c > to; c--) {
-                for (char &e:s) {
-                    if (e==c) e = char(c-1);
-                }
-            }
-            break;
-        } 
-        mx=max(mx, s[i]-'a');
+    ret=0.0;
+    for (int k=0; k<=a[i]; k++) {
+        if (j<k || n-j<a[i]-k) continue;
+        double p=c[j][k]*c[n-j][a[i]-k]/c[n][a[i]];
+        ret+=p*go(i+1,j+a[i]-2*k);
     }
-    for (char &e:s) {
-        if (e-'a'<=mx) e = 'a';
-    } 
-    cout<<s<<endl;
+
+    return ret;
 }
+
 int main() {
     fio();
-    int t;
-    cin>>t;
-    while (t--) solve();
+    for (int i=0; i<55; i++) for (int j=0; j<MAX; j++) d[i][j]= -1.0;
+    for (int i=0; i<MAX; i++) {
+        c[i][0]=1;
+        for (int j=1; j<=i; j++) c[i][j]=c[i-1][j-1]+c[i-1][j];
+    }
+
+    cin>>n>>k;
+    for (int i=0; i<k; i++) cin>>a[i];
+
+    cout.precision(15); cout<<fixed;
+    cout<<go(0,n);
     return 0;
 }

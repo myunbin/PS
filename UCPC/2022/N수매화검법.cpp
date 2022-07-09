@@ -34,33 +34,52 @@ const int INF = 0x3f3f3f3f;
 const ll LINF = 0x3f3f3f3f3f3f3f3f;
 const int MAX = 101010; // PLZ CHK!
 
-void solve() {
-    int n,k; cin >> n >> k;
-    string s; cin >> s;
+struct P {
+    ll x,y;
+};
 
-    int mx=0;
-    for (int i=0; i<n; i++) {
-        if (k<s[i]-'a') {
-            k-=mx;
-            char st=s[i], to=s[i]-k;
-            for (char c = st; c > to; c--) {
-                for (char &e:s) {
-                    if (e==c) e = char(c-1);
-                }
-            }
-            break;
-        } 
-        mx=max(mx, s[i]-'a');
-    }
-    for (char &e:s) {
-        if (e-'a'<=mx) e = 'a';
-    } 
-    cout<<s<<endl;
+struct ST {
+    P p1,p2;
+    ll w;
+};
+
+int ccw(P p1, P p2, P p3){
+	ll t1 = p1.x * p2.y + p2.x * p3.y + p3.x * p1.y;
+	ll t2 = p1.y * p2.x + p2.y * p3.x + p3.y * p1.x;
+	// t1-t2의 부호를 반환
+	if(t1==t2) return 0;
+	else return t1<t2 ? -1 : 1; 
 }
+
+inline bool id(P p1, P p2) {return (p1.x==p2.x && p1.y==p2.y);}
+
 int main() {
     fio();
-    int t;
-    cin>>t;
-    while (t--) solve();
+    int n;
+    cin>>n;
+    vector<ST> v(n);
+    ll ans=0;
+    for (auto &[s,e,w]:v) {
+        cin>>s.x>>s.y>>e.x>>e.y>>w;
+        ans+=w;
+    }
+
+    sort(all(v),[](ST a, ST b){
+        return a.w<b.w;
+    });
+
+    for (int i=0; i<n; i++) {
+        auto [s1,e1,w1]=v[i];
+        for (int j=i+1; j<n; j++) {
+            auto [s2,e2,w2]=v[j];
+            int r1=ccw(s1,e1,s2)*ccw(s1,e1,e2);
+            int r2=ccw(s2,e2,s1)*ccw(s2,e2,e1);
+            if (r1==-1&&r2==-1) {
+                ans+=w1;
+            }
+        }
+    }
+    
+    cout<<ans;
     return 0;
 }

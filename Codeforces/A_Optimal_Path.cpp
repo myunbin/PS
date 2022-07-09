@@ -34,8 +34,16 @@ const int INF = 0x3f3f3f3f;
 const ll LINF = 0x3f3f3f3f3f3f3f3f;
 const int MAX = 101010; // PLZ CHK!
 
+void solve() {
+    int n,m;
+    cin>>n>>m;
+    ll ans=1ll*m*(m+1)/2+1ll*m*(n*(n+1)/2-1);
+    cout<<ans<<endl;
+}
 int main() {
     fio();
-
+    int t;
+    cin>>t;
+    while (t--) solve();
     return 0;
 }

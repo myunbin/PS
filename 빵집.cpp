@@ -32,35 +32,34 @@ typedef pair<double, int> pdi;
 const ll MOD = 1e9+7;
 const int INF = 0x3f3f3f3f;
 const ll LINF = 0x3f3f3f3f3f3f3f3f;
-const int MAX = 101010; // PLZ CHK!
+const int MAX = 10101; // PLZ CHK!
+int r,c;
+string a[MAX];
+bool v[MAX][555];
+const int dx[]={-1,0,1}, dy[]={1,1,1};
 
-void solve() {
-    int n,k; cin >> n >> k;
-    string s; cin >> s;
-
-    int mx=0;
-    for (int i=0; i<n; i++) {
-        if (k<s[i]-'a') {
-            k-=mx;
-            char st=s[i], to=s[i]-k;
-            for (char c = st; c > to; c--) {
-                for (char &e:s) {
-                    if (e==c) e = char(c-1);
-                }
-            }
-            break;
-        } 
-        mx=max(mx, s[i]-'a');
+int ans=0;
+bool dfs(int x, int y) {
+    v[x][y]=1;
+    if (y==c-1) {
+        ++ans;
+        return 1;
     }
-    for (char &e:s) {
-        if (e-'a'<=mx) e = 'a';
-    } 
-    cout<<s<<endl;
+
+    for (int i=0; i<3; i++) {
+        int nx=x+dx[i], ny=y+dy[i];
+        if (0>nx||nx>=r||0>ny||ny>=c||v[nx][ny]||a[nx][ny]=='x') continue;
+        if (dfs(nx,ny)) return 1;
+    }
+    return 0;
 }
+
 int main() {
     fio();
-    int t;
-    cin>>t;
-    while (t--) solve();
+    cin>>r>>c;
+    for (int i=0; i<r; i++) cin>>a[i];
+
+    for (int i=0; i<r; i++) dfs(i,0);
+    cout<<ans;
     return 0;
 }
