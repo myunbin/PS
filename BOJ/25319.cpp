@@ -34,31 +34,48 @@ const int INF = 0x3f3f3f3f;
 const ll LINF = 0x3f3f3f3f3f3f3f3f;
 const int MAX = 101010; // PLZ CHK!
 
-vector<bool> f(ll x) {
-    vector<bool> ret(31,0);
-    if (x%4==1 || x%4==2) ret[0]=1; 
-    for (int i=1; i<31; i++) {
-        ll m=x%(1ll<<(i+1));
-        if ((1ll<<i)<=m && (m%2==0)) ret[i]=1;
-    }
-    return ret;
-}
-
-void solve() {
-    ll x,y;
-    cin>>x>>y;
-
-    vector<bool> a=f(x-1), b=f(y);
-    ll ans=0;
-    for (int i=0; i<31; i++) {
-        if (a[i]^b[i]) ans+=(1<<i);
-    }
-    cout<<ans<<endl;
-}
 int main() {
     fio();
-    int t;
-    cin>>t;
-    while (t--) solve();
+    int n,m,sz;
+    cin>>n>>m>>sz;
+    vector<vector<pii>> pos(30);
+    for (int i=1; i<=n; i++) {
+        for (int j=1; j<=m; j++) {
+            char c; cin>>c;
+            pos[c-'a'].pb({i,j});
+        }
+    }
+    string s;
+    cin>>s;
+    int mn=INF;
+    vector<int> nd(30);
+    for (char c:s) nd[c-'a']++;
+    for (char c:s) mn=min(mn, sz(pos[c-'a'])/nd[c-'a']);
+
+    int cnt=0;
+    string ans;
+    int cur=0;
+    pii cp={1,1};
+
+    string t;
+    int r=sz*mn;
+    while (r--) {
+        char c=s[cur]; t+=c;
+
+        pii np=pos[c-'a'].back();
+        pos[c-'a'].pop_back();
+
+        for (int i=0; i<abs(cp.F-np.F); i++) ans+=(cp.F<=np.F?'D':'U');
+        for (int i=0; i<abs(cp.S-np.S); i++) ans+=(cp.S<=np.S?'R':'L');
+        ans+='P';
+
+        cp=np;
+        cur=(cur+1)%sz;
+    }
+
+    for (int i=0; i<n-cp.F; i++) ans+='D';
+    for (int i=0; i<m-cp.S; i++) ans+='R';
+
+    cout<<mn<<sp<<sz(ans)<<endl<<ans;
     return 0;
 }

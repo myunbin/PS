@@ -34,31 +34,26 @@ const int INF = 0x3f3f3f3f;
 const ll LINF = 0x3f3f3f3f3f3f3f3f;
 const int MAX = 101010; // PLZ CHK!
 
-vector<bool> f(ll x) {
-    vector<bool> ret(31,0);
-    if (x%4==1 || x%4==2) ret[0]=1; 
-    for (int i=1; i<31; i++) {
-        ll m=x%(1ll<<(i+1));
-        if ((1ll<<i)<=m && (m%2==0)) ret[i]=1;
-    }
-    return ret;
-}
-
-void solve() {
-    ll x,y;
-    cin>>x>>y;
-
-    vector<bool> a=f(x-1), b=f(y);
-    ll ans=0;
-    for (int i=0; i<31; i++) {
-        if (a[i]^b[i]) ans+=(1<<i);
-    }
-    cout<<ans<<endl;
-}
 int main() {
     fio();
-    int t;
-    cin>>t;
-    while (t--) solve();
+    int n;
+    cin>>n;
+    vector<ll> v(n+1), p(n+1), q(n+2);
+
+    for (int i=1; i<=n; i++) {
+        cin>>v[i];
+        p[i]=gcd(v[i],p[i-1]);
+    }
+    for (int i=n; i>=1; i--) {
+        q[i]=gcd(v[i],q[i+1]);
+    }
+
+    pll ans={-1,-1};
+    for (int i=1; i<=n; i++) {
+        ll g=gcd(p[i-1], q[i+1]);
+        if (v[i]%g!=0) ans=max(ans,{g,v[i]});
+    }
+    if (ans.F==-1) cout<<-1;
+    else cout<<ans.F<<sp<<ans.S;
     return 0;
 }

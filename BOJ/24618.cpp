@@ -34,31 +34,46 @@ const int INF = 0x3f3f3f3f;
 const ll LINF = 0x3f3f3f3f3f3f3f3f;
 const int MAX = 101010; // PLZ CHK!
 
-vector<bool> f(ll x) {
-    vector<bool> ret(31,0);
-    if (x%4==1 || x%4==2) ret[0]=1; 
-    for (int i=1; i<31; i++) {
-        ll m=x%(1ll<<(i+1));
-        if ((1ll<<i)<=m && (m%2==0)) ret[i]=1;
-    }
-    return ret;
-}
-
-void solve() {
-    ll x,y;
-    cin>>x>>y;
-
-    vector<bool> a=f(x-1), b=f(y);
-    ll ans=0;
-    for (int i=0; i<31; i++) {
-        if (a[i]^b[i]) ans+=(1<<i);
-    }
-    cout<<ans<<endl;
-}
 int main() {
     fio();
-    int t;
-    cin>>t;
-    while (t--) solve();
+    int n; 
+    pll g;
+    cin>>n>>g.F>>g.S;
+
+    vector<pll> a(n);
+    for (auto &[x,y]:a) cin>>x>>y;
+    
+    int h=(n>>1), oh=n-h;
+    map<pll, map<ll,int>> m1;
+    for (int i=0; i<(1<<h); i++) {
+        pll cur={0,0};
+        int k1=0;
+        for (int j=0; j<h; j++) {
+            if (i&(1<<j)) {
+                cur={cur.F+a[j].F, cur.S+a[j].S};
+                k1++;
+            }
+        }
+        m1[cur][k1]++;
+    }
+
+    vector<ll> ans(n+1);
+    for (int i=0; i<(1<<oh); i++) {
+        pll cur={0,0};
+        ll k2=0;
+        for (int j=h; j<n; j++) {
+            if (i&(1<<(j-h))) {
+                cur={cur.F+a[j].F, cur.S+a[j].S};
+                k2++;
+            }
+        }
+
+        if (m1.find({g.F-cur.F, g.S-cur.S})!=m1.end()) {
+            for (auto [k1,cnt]:m1[{g.F-cur.F, g.S-cur.S}]) {
+                ans[k1+k2]+=cnt;
+            }
+        }
+    }
+    for (int i=1; i<=n; i++) cout<<ans[i]<<endl;
     return 0;
 }

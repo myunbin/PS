@@ -1,3 +1,4 @@
+
 #include <bits/stdc++.h>
 using namespace std;
 #pragma GCC optimize("Ofast")
@@ -32,33 +33,44 @@ typedef pair<double, int> pdi;
 const ll MOD = 1e9+7;
 const int INF = 0x3f3f3f3f;
 const ll LINF = 0x3f3f3f3f3f3f3f3f;
-const int MAX = 101010; // PLZ CHK!
+const int MAX = 202020; // PLZ CHK!
 
-vector<bool> f(ll x) {
-    vector<bool> ret(31,0);
-    if (x%4==1 || x%4==2) ret[0]=1; 
-    for (int i=1; i<31; i++) {
-        ll m=x%(1ll<<(i+1));
-        if ((1ll<<i)<=m && (m%2==0)) ret[i]=1;
-    }
-    return ret;
-}
-
-void solve() {
-    ll x,y;
-    cin>>x>>y;
-
-    vector<bool> a=f(x-1), b=f(y);
-    ll ans=0;
-    for (int i=0; i<31; i++) {
-        if (a[i]^b[i]) ans+=(1<<i);
-    }
-    cout<<ans<<endl;
-}
 int main() {
     fio();
-    int t;
-    cin>>t;
-    while (t--) solve();
+    int n;
+    cin>>n;
+    vector<int> g[MAX];
+    for (int i=1; i<=n; i++) {
+        while (1) {
+            int x; cin>>x;
+            if (x==0) break;
+            g[i].pb(x);
+        }
+    }
+    int m;
+    cin>>m;
+    queue<pii> q;
+    vector<int> v(n+1,0), f(n+1,0);
+    for (int i=0; i<m; i++) {
+        int x; cin>>x;
+        q.push({x,0});    
+        v[x]=1;
+    }
+
+    vector<int> ans(n+1, -1);
+    while (!q.empty()) {
+        auto [cur, t]=q.front(); q.pop();
+        ans[cur]=t;
+        for (int nxt:g[cur]) {
+            if (v[nxt]) continue;
+            f[nxt]++;
+            if (f[nxt]*2>=sz(g[nxt])) {
+                q.push({nxt, t+1});
+                v[nxt]=1;
+            }
+        }
+    }
+
+    for (int i=1; i<=n; i++) cout<<ans[i]<<sp;
     return 0;
 }

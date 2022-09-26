@@ -21,6 +21,7 @@ using namespace std;
 #define clr(a) a.clear()
 
 typedef long long ll;
+typedef unsigned long long ull;
 typedef pair<int, int> pii;
 typedef pair<ll, ll> pll;
 typedef pair<int, ll> pil;
@@ -32,33 +33,25 @@ typedef pair<double, int> pdi;
 const ll MOD = 1e9+7;
 const int INF = 0x3f3f3f3f;
 const ll LINF = 0x3f3f3f3f3f3f3f3f;
-const int MAX = 101010; // PLZ CHK!
+const int MAX = 1010101; // PLZ CHK!
 
-vector<bool> f(ll x) {
-    vector<bool> ret(31,0);
-    if (x%4==1 || x%4==2) ret[0]=1; 
-    for (int i=1; i<31; i++) {
-        ll m=x%(1ll<<(i+1));
-        if ((1ll<<i)<=m && (m%2==0)) ret[i]=1;
-    }
-    return ret;
-}
-
-void solve() {
-    ll x,y;
-    cin>>x>>y;
-
-    vector<bool> a=f(x-1), b=f(y);
-    ll ans=0;
-    for (int i=0; i<31; i++) {
-        if (a[i]^b[i]) ans+=(1<<i);
-    }
-    cout<<ans<<endl;
-}
 int main() {
     fio();
-    int t;
+    vector<ull> a(MAX+1,1);
+    for (int i=2; i<MAX; i++) {
+        for (int j=i; j<MAX; j+=i) {
+            a[j]+=i;
+        }
+    }
+
+    vector<ull> p(MAX+1, 0);
+    for (int i=1; i<MAX; i++) p[i]=p[i-1]+a[i];
+
+    int t; 
     cin>>t;
-    while (t--) solve();
+    while (t--) {
+        int n; cin>>n;
+        cout<<p[n]<<endl;
+    }
     return 0;
 }

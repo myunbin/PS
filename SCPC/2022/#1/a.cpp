@@ -4,8 +4,7 @@ using namespace std;
 #pragma GCC target("fma,sse,sse2,sse3,ssse3,sse4,popcnt,abm,mmx,avx,avx2,tune=native")
 #pragma GCC optimize("unroll-loops")
 
-#define fileio() freopen("input.txt","r",stdin); freopen("output.txt","w",stdout)
-#define fio() ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0)
+#define fio() ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(NULL)
 #define all(x) (x).begin(), (x).end()
 #define allr(x) x.rbegin(), x.rend()
 #define cmprs(x) sort(all(x)),x.erase(unique(all(x)),x.end())
@@ -34,31 +33,41 @@ const int INF = 0x3f3f3f3f;
 const ll LINF = 0x3f3f3f3f3f3f3f3f;
 const int MAX = 101010; // PLZ CHK!
 
-vector<bool> f(ll x) {
-    vector<bool> ret(31,0);
-    if (x%4==1 || x%4==2) ret[0]=1; 
-    for (int i=1; i<31; i++) {
-        ll m=x%(1ll<<(i+1));
-        if ((1ll<<i)<=m && (m%2==0)) ret[i]=1;
-    }
-    return ret;
-}
-
 void solve() {
-    ll x,y;
-    cin>>x>>y;
+    int n;
+    cin>>n;
+    vector<ll> a(n),b(n);
+    for (int i=0; i<n; i++) cin>>a[i];
+    for (int i=0; i<n; i++) cin>>b[i];
 
-    vector<bool> a=f(x-1), b=f(y);
+    map<ll, vector<ll>> m1,m2;
+    for (int i=0; i<n; i++) m1[b[i]].pb(a[i]);
+
+    sort(all(b));
+    for (int i=0; i<n; i++) m2[b[i]].pb(a[i]);
+
+    auto it1=m1.begin();
+    auto it2=m2.begin();
     ll ans=0;
-    for (int i=0; i<31; i++) {
-        if (a[i]^b[i]) ans+=(1<<i);
+    while (it1!=m1.end()) {
+        auto [x1,v1]=*it1;
+        auto [x2,v2]=*it2;
+        int s=sz(v1);
+        for (int i=0; i<s; i++) ans+=abs(v1[i]-v2[i]);
+
+        it1++,it2++;
     }
+
     cout<<ans<<endl;
 }
+
 int main() {
     fio();
     int t;
     cin>>t;
-    while (t--) solve();
+    for (int i=1; i<=t; i++) {
+        cout<<"Case #"<<i<<endl;
+        solve();
+    }
     return 0;
 }

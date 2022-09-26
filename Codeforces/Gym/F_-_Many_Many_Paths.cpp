@@ -32,33 +32,36 @@ typedef pair<double, int> pdi;
 const ll MOD = 1e9+7;
 const int INF = 0x3f3f3f3f;
 const ll LINF = 0x3f3f3f3f3f3f3f3f;
-const int MAX = 101010; // PLZ CHK!
+const int MAX = 2020202; // PLZ CHK!
 
-vector<bool> f(ll x) {
-    vector<bool> ret(31,0);
-    if (x%4==1 || x%4==2) ret[0]=1; 
-    for (int i=1; i<31; i++) {
-        ll m=x%(1ll<<(i+1));
-        if ((1ll<<i)<=m && (m%2==0)) ret[i]=1;
+ll fct[MAX], fiv[MAX], inv[MAX];
+void factinv() {
+    fct[0] = fct[1] = inv[0] = inv[1] = fiv[0] = fiv[1] = 1;
+    for (int i = 2; i < MAX; i++) {
+        fct[i] = (fct[i-1]*i)%MOD;
+        inv[i] = MOD-(MOD/i)*inv[MOD%i]%MOD;
+        fiv[i] = (fiv[i-1]*inv[i])%MOD;
     }
-    return ret;
 }
 
-void solve() {
-    ll x,y;
-    cin>>x>>y;
-
-    vector<bool> a=f(x-1), b=f(y);
-    ll ans=0;
-    for (int i=0; i<31; i++) {
-        if (a[i]^b[i]) ans+=(1<<i);
-    }
-    cout<<ans<<endl;
+ll bico(int n, int k) {
+    if (n<k) return 0;
+	return (fct[n]*(fiv[k]*fiv[n-k]%MOD)%MOD)%MOD;
 }
+
 int main() {
     fio();
-    int t;
-    cin>>t;
-    while (t--) solve();
+    factinv();
+
+    int x1,x2,y1,y2;
+    cin>>x1>>y1>>x2>>y2;
+
+    ll ans=0;
+    for (int x=x1; x<=x2; x++) {
+        ll t=(bico(x+y2+1,y2)-bico(x+y1,y1-1)+MOD)%MOD;
+        ans=(ans+t)%MOD;
+    }
+    
+    cout<<ans;
     return 0;
 }

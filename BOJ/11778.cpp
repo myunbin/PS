@@ -34,31 +34,37 @@ const int INF = 0x3f3f3f3f;
 const ll LINF = 0x3f3f3f3f3f3f3f3f;
 const int MAX = 101010; // PLZ CHK!
 
-vector<bool> f(ll x) {
-    vector<bool> ret(31,0);
-    if (x%4==1 || x%4==2) ret[0]=1; 
-    for (int i=1; i<31; i++) {
-        ll m=x%(1ll<<(i+1));
-        if ((1ll<<i)<=m && (m%2==0)) ret[i]=1;
+typedef vector<vector<ll>> vvl;
+
+vvl I={{1,0},{0,1}};
+
+vvl operator* (const vvl &a, const vvl &b) {
+    int sz=sz(a);
+    vvl ret(sz,vector<ll>(sz));
+    for (int i=0; i<sz; i++) {
+        for (int j=0; j<sz; j++) {
+            for (int k=0; k<sz; k++) {
+                ll t=(a[i][k]*b[k][j])%MOD;
+                ret[i][j]=(ret[i][j]+t)%MOD;
+            }
+        }
     }
     return ret;
 }
 
-void solve() {
-    ll x,y;
-    cin>>x>>y;
-
-    vector<bool> a=f(x-1), b=f(y);
-    ll ans=0;
-    for (int i=0; i<31; i++) {
-        if (a[i]^b[i]) ans+=(1<<i);
-    }
-    cout<<ans<<endl;
+vvl pow(vvl x, ll y) {
+    if (y==0) return I;
+    if (y&1) return x*pow(x, y-1);
+    vvl r=pow(x, y>>1);
+    return r*r;
 }
+
 int main() {
     fio();
-    int t;
-    cin>>t;
-    while (t--) solve();
+    ll n,m;
+    cin>>n>>m;
+    vvl a={{1,1},{1,0}};
+    vvl r=pow(a, gcd(n,m));
+    cout<<r[0][1]%MOD;
     return 0;
 }

@@ -34,26 +34,38 @@ const int INF = 0x3f3f3f3f;
 const ll LINF = 0x3f3f3f3f3f3f3f3f;
 const int MAX = 101010; // PLZ CHK!
 
-vector<bool> f(ll x) {
-    vector<bool> ret(31,0);
-    if (x%4==1 || x%4==2) ret[0]=1; 
-    for (int i=1; i<31; i++) {
-        ll m=x%(1ll<<(i+1));
-        if ((1ll<<i)<=m && (m%2==0)) ret[i]=1;
-    }
-    return ret;
-}
-
 void solve() {
-    ll x,y;
-    cin>>x>>y;
-
-    vector<bool> a=f(x-1), b=f(y);
-    ll ans=0;
-    for (int i=0; i<31; i++) {
-        if (a[i]^b[i]) ans+=(1<<i);
+    int n,l,k;
+    cin>>n>>l>>k;
+    vector<pii> v(n);
+    deque<int> d;
+    for (int i=0; i<n; i++) {
+        int p,a; cin>>p>>a;
+        d.pb(a);
+        if (a<0) v[i]={p+1,-1};
+        else v[i]={l-p+1, 1};
     }
-    cout<<ans<<endl;
+    sort(all(v));
+    int p=0;
+    vector<int> ans;
+    while (p<n) {
+        auto [dst,s]=v[p];
+        vector<int> t;
+        while (p<n && dst==v[p].F) {
+            if (v[p].S==1) {
+                t.pb(d.back());
+                d.pop_back();
+            }
+            else {
+                t.pb(d.front());
+                d.pop_front();
+            }
+            p++;
+        }
+        sort(all(t));
+        for (int x:t) ans.pb(x);
+    }
+    cout<<ans[k-1]<<endl;
 }
 int main() {
     fio();

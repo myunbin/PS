@@ -4,7 +4,7 @@ using namespace std;
 #pragma GCC target("fma,sse,sse2,sse3,ssse3,sse4,popcnt,abm,mmx,avx,avx2,tune=native")
 #pragma GCC optimize("unroll-loops")
 
-#define fileio() freopen("input.txt","r",stdin); freopen("output.txt","w",stdout)
+// #define fileio() freopen("input.txt","r",stdin); freopen("output.txt","w",stdout)
 #define fio() ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0)
 #define all(x) (x).begin(), (x).end()
 #define allr(x) x.rbegin(), x.rend()
@@ -34,31 +34,36 @@ const int INF = 0x3f3f3f3f;
 const ll LINF = 0x3f3f3f3f3f3f3f3f;
 const int MAX = 101010; // PLZ CHK!
 
-vector<bool> f(ll x) {
-    vector<bool> ret(31,0);
-    if (x%4==1 || x%4==2) ret[0]=1; 
-    for (int i=1; i<31; i++) {
-        ll m=x%(1ll<<(i+1));
-        if ((1ll<<i)<=m && (m%2==0)) ret[i]=1;
-    }
-    return ret;
-}
-
 void solve() {
-    ll x,y;
-    cin>>x>>y;
+    int n,k;
+    cin>>n>>k;
+    vector<int> a(n);
+    for (int &x:a) cin>>x, x=max(k-x, 0);
 
-    vector<bool> a=f(x-1), b=f(y);
-    ll ans=0;
-    for (int i=0; i<31; i++) {
-        if (a[i]^b[i]) ans+=(1<<i);
+    int mx=*max_element(all(a));
+
+    int l=0, r=n-1;
+    while (l<n && a[l]==0) l++;
+    while (r>=0 && a[r]==0) r--;
+
+    ll ans=0, cnt=0;
+    while (l<=r) {
+        ans+=1ll*(r-l+1)*(min(a[l],a[r])-cnt);
+        cnt+=(min(a[l], a[r])-cnt);
+
+        while (l<n && a[l]<=cnt) l++;
+        while (r>=0 && a[r]<=cnt) r--;
     }
-    cout<<ans<<endl;
+
+    cout<<mx<<sp<<ans<<endl;
 }
 int main() {
     fio();
     int t;
     cin>>t;
-    while (t--) solve();
+    for (int i=1; i<=t; i++) {
+        cout<<"Case #"<<i<<endl;
+        solve();
+    }
     return 0;
 }

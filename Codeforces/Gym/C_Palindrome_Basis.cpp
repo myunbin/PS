@@ -32,32 +32,53 @@ typedef pair<double, int> pdi;
 const ll MOD = 1e9+7;
 const int INF = 0x3f3f3f3f;
 const ll LINF = 0x3f3f3f3f3f3f3f3f;
-const int MAX = 101010; // PLZ CHK!
+const int MAX = 40404; // PLZ CHK!
 
-vector<bool> f(ll x) {
-    vector<bool> ret(31,0);
-    if (x%4==1 || x%4==2) ret[0]=1; 
-    for (int i=1; i<31; i++) {
-        ll m=x%(1ll<<(i+1));
-        if ((1ll<<i)<=m && (m%2==0)) ret[i]=1;
+vector<int> pal;
+
+void init() {
+    for (int i=1; i<MAX; i++) {
+        vector<int> a;
+        int t=i;
+        while (t) {
+            a.pb(t%10);
+            t/=10;
+        }
+        bool ok=1;
+        for (int j=0; j<sz(a)/2; j++) {
+            if (a[j]!=a[sz(a)-1-j]) {
+                ok=0;
+                break;
+            }
+        }
+
+        if (ok) pal.pb(i);
     }
-    return ret;
 }
 
-void solve() {
-    ll x,y;
-    cin>>x>>y;
+ll d[MAX];
 
-    vector<bool> a=f(x-1), b=f(y);
-    ll ans=0;
-    for (int i=0; i<31; i++) {
-        if (a[i]^b[i]) ans+=(1<<i);
-    }
-    cout<<ans<<endl;
+void init2() {
+    d[0]=1;
+    for (int i=0; i<sz(pal); i++) {
+        for (int j=1; j<MAX; j++) {
+            if (j-pal[i]<0) continue;
+            d[j]=(d[j]+d[j-pal[i]])%MOD;
+        }
+    }    
+}
+void solve() {
+    int n;
+    cin>>n;
+    cout<<d[n]<<endl;
 }
 int main() {
     fio();
-    int t;
+    init();
+    // cout<<sz(pal);
+    // for (int i=0; i<100; i++) cout<<pal[i]<<endl;
+    init2();
+    int t; 
     cin>>t;
     while (t--) solve();
     return 0;

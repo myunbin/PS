@@ -34,31 +34,48 @@ const int INF = 0x3f3f3f3f;
 const ll LINF = 0x3f3f3f3f3f3f3f3f;
 const int MAX = 101010; // PLZ CHK!
 
-vector<bool> f(ll x) {
-    vector<bool> ret(31,0);
-    if (x%4==1 || x%4==2) ret[0]=1; 
-    for (int i=1; i<31; i++) {
-        ll m=x%(1ll<<(i+1));
-        if ((1ll<<i)<=m && (m%2==0)) ret[i]=1;
+struct fwt {
+    // 1-indexed!
+    vector<ll> tr;
+    void rst(int n) {tr.resize(n+1);}
+    void upd(int i, ll v) {
+        for (; i<sz(tr); i+=(i&-i)) tr[i]+=v;
     }
-    return ret;
-}
-
-void solve() {
-    ll x,y;
-    cin>>x>>y;
-
-    vector<bool> a=f(x-1), b=f(y);
-    ll ans=0;
-    for (int i=0; i<31; i++) {
-        if (a[i]^b[i]) ans+=(1<<i);
+    ll qry(int r) { //[1,r]
+        ll sum=0;
+        for (; r; r-=(r&(-r))) sum+=tr[r];
+        return sum;
     }
-    cout<<ans<<endl;
-}
+    ll qry(int l, int r) { //[l, r]
+        if(l==0) return qry(r);
+        return qry(r)-qry(l-1);
+    }
+};
+
 int main() {
     fio();
-    int t;
-    cin>>t;
-    while (t--) solve();
+    int n;
+    cin>>n;
+
+    vector<pii> pos(n);
+    for (int i=1; i<=n; i++) {
+        int x; cin>>x;
+        pos[x-1].F=i;
+    }
+    for (int i=1; i<=n; i++) {
+        int x; cin>>x;
+        pos[x-1].S=i;
+    }
+    sort(all(pos));
+
+    int ans=0;
+    int mx=0;
+    
+    for (auto [x,y]:pos) {
+        if (mx>y) ++ans;
+        mx=max(mx,y);
+    }
+
+    cout<<ans;
     return 0;
 }

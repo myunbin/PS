@@ -34,31 +34,48 @@ const int INF = 0x3f3f3f3f;
 const ll LINF = 0x3f3f3f3f3f3f3f3f;
 const int MAX = 101010; // PLZ CHK!
 
-vector<bool> f(ll x) {
-    vector<bool> ret(31,0);
-    if (x%4==1 || x%4==2) ret[0]=1; 
-    for (int i=1; i<31; i++) {
-        ll m=x%(1ll<<(i+1));
-        if ((1ll<<i)<=m && (m%2==0)) ret[i]=1;
+struct rr{
+    ll a,b,c;
+};
+
+int n;
+vector<rr> v;
+
+bool ok(ll x) {
+    ll sum=0;
+    for (auto [a,c,b]:v) {
+        if (x<a) continue;
+        sum+=(min(c,x)-a)/b+1;
     }
-    return ret;
+    return sum&1;
 }
 
-void solve() {
-    ll x,y;
-    cin>>x>>y;
-
-    vector<bool> a=f(x-1), b=f(y);
-    ll ans=0;
-    for (int i=0; i<31; i++) {
-        if (a[i]^b[i]) ans+=(1<<i);
-    }
-    cout<<ans<<endl;
-}
 int main() {
     fio();
-    int t;
-    cin>>t;
-    while (t--) solve();
+    cin>>n;
+    v.resize(n);
+    for (auto &[a,c,b]:v) {
+        cin>>a>>c>>b;
+    }    
+
+    ll l=1ll, r=(1ll<<31)-1;
+    ll ans=-1;
+    while (l<=r) {
+        ll m=(l+r)>>1;
+        if (ok(m)) {   
+            ans=m;
+            r=m-1;
+        }
+        else l=m+1;
+    }
+
+    if (ans==-1) cout<<"NOTHING";
+    else {
+        ll cnt=0;
+        for (auto [a,c,b]:v) {
+            if (a<=ans && ans<=c && (ans-a)%b==0) cnt++;
+        }
+        cout<<ans<<sp<<cnt;
+    }
     return 0;
 }

@@ -34,26 +34,24 @@ const int INF = 0x3f3f3f3f;
 const ll LINF = 0x3f3f3f3f3f3f3f3f;
 const int MAX = 101010; // PLZ CHK!
 
-vector<bool> f(ll x) {
-    vector<bool> ret(31,0);
-    if (x%4==1 || x%4==2) ret[0]=1; 
-    for (int i=1; i<31; i++) {
-        ll m=x%(1ll<<(i+1));
-        if ((1ll<<i)<=m && (m%2==0)) ret[i]=1;
-    }
-    return ret;
-}
-
 void solve() {
-    ll x,y;
-    cin>>x>>y;
-
-    vector<bool> a=f(x-1), b=f(y);
-    ll ans=0;
-    for (int i=0; i<31; i++) {
-        if (a[i]^b[i]) ans+=(1<<i);
+    int n,m;
+    cin>>n>>m;
+    string a,b;
+    cin>>a>>b;
+    for (int i=1; i<sz(b); i++) {
+        if (b[i]!=a[i+n-m]) {
+            cout<<"NO\n";
+            return;
+        }
     }
-    cout<<ans<<endl;
+    for (int i=0; i<=n-m; i++) {
+        if (a[i]==b[0]) {
+            cout<<"YES\n";
+            return;
+        }
+    }
+    cout<<"NO\n";
 }
 int main() {
     fio();

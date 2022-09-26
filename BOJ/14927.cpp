@@ -32,33 +32,60 @@ typedef pair<double, int> pdi;
 const ll MOD = 1e9+7;
 const int INF = 0x3f3f3f3f;
 const ll LINF = 0x3f3f3f3f3f3f3f3f;
-const int MAX = 101010; // PLZ CHK!
+const int MAX = 22; // PLZ CHK!
 
-vector<bool> f(ll x) {
-    vector<bool> ret(31,0);
-    if (x%4==1 || x%4==2) ret[0]=1; 
-    for (int i=1; i<31; i++) {
-        ll m=x%(1ll<<(i+1));
-        if ((1ll<<i)<=m && (m%2==0)) ret[i]=1;
+vector<vector<int>> a(MAX, vector<int>(MAX));
+int ans=MAX*MAX;
+int n;
+
+void go(int i, vector<int> x, vector<int> y, vector<int> z, int cnt) {
+    if (i==n) {
+        for (int j=0; j<n; j++) {
+            if (x[j]) return;
+        }
+        ans=min(ans, cnt);
+        return;
     }
-    return ret;
+
+    for (int j=0; j<n; j++) {
+        if (x[j]) {
+            cnt++;
+            z[j]=!z[j];
+            y[j]=!y[j];
+            if (j-1>=0) y[j-1]=!y[j-1];
+            if (j+1<n) y[j+1]=!y[j+1];
+        }
+    }
+
+    go(i+1,y,z,a[i+2],cnt);
 }
 
-void solve() {
-    ll x,y;
-    cin>>x>>y;
-
-    vector<bool> a=f(x-1), b=f(y);
-    ll ans=0;
-    for (int i=0; i<31; i++) {
-        if (a[i]^b[i]) ans+=(1<<i);
+void init(int j, vector<int> a0, vector<int> a1, int cnt) {
+    if (j==n) {
+        vector<int> tt(MAX,0);
+        go(0,tt,a0,a1,cnt);
+        return;
     }
-    cout<<ans<<endl;
+
+    init(j+1, a0, a1, cnt);
+
+    a0[j]=!a0[j];
+    if (j-1>=0) a0[j-1]=!a0[j-1];
+    if (j+1<n) a0[j+1]=!a0[j+1];
+    a1[j]=!a1[j];
+    init(j+1, a0, a1, cnt+1);
 }
+
 int main() {
     fio();
-    int t;
-    cin>>t;
-    while (t--) solve();
+    cin>>n;
+    for (int i=0; i<n; i++) {
+        for (int j=0; j<n; j++) {
+            cin>>a[i][j];
+        }
+    }
+    
+    init(0,a[0],a[1],0);
+    cout<<(ans==MAX*MAX?-1:ans);
     return 0;
 }

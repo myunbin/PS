@@ -34,24 +34,52 @@ const int INF = 0x3f3f3f3f;
 const ll LINF = 0x3f3f3f3f3f3f3f3f;
 const int MAX = 101010; // PLZ CHK!
 
-vector<bool> f(ll x) {
-    vector<bool> ret(31,0);
-    if (x%4==1 || x%4==2) ret[0]=1; 
-    for (int i=1; i<31; i++) {
-        ll m=x%(1ll<<(i+1));
-        if ((1ll<<i)<=m && (m%2==0)) ret[i]=1;
-    }
-    return ret;
-}
-
 void solve() {
-    ll x,y;
-    cin>>x>>y;
+    int n; 
+    cin>>n;
+    vector<int> a(n+1), p(n+1);
+    for (int i=1; i<=n; i++) {
+        cin>>a[i];
+        p[i]=p[i-1]+a[i];
+    }
 
-    vector<bool> a=f(x-1), b=f(y);
-    ll ans=0;
-    for (int i=0; i<31; i++) {
-        if (a[i]^b[i]) ans+=(1<<i);
+    bool ds=0;
+    for (int i=1; i<n; i++) {
+        if (a[i]!=a[i+1]) {
+            ds=1;
+            break;
+        }
+    }
+    if (!ds) {
+        cout<<0<<endl;
+        return;
+    }
+
+    vector<int> div;
+    int s=p[n];
+    for (int i=1; i*i<=s; i++) {
+        if (s%i==0) {
+            int x=i, y=s/i;
+            if (x!=1) div.pb(x);
+            if (x!=y) div.pb(y);
+        }
+    }
+
+    sort(all(div));
+
+    int ans=n-1;
+    for (int x:div) {
+        int cnt=0;
+        bool ok=1;
+        for (int f=x; f<=s; f+=x) {
+            int i=lb(all(p),f)-p.begin();
+            if (p[i]==f) cnt++;
+            else {
+                ok=0;
+                break;
+            }
+        }
+        if (ok) ans=min(ans, n-cnt);
     }
     cout<<ans<<endl;
 }

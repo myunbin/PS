@@ -34,31 +34,34 @@ const int INF = 0x3f3f3f3f;
 const ll LINF = 0x3f3f3f3f3f3f3f3f;
 const int MAX = 101010; // PLZ CHK!
 
-vector<bool> f(ll x) {
-    vector<bool> ret(31,0);
-    if (x%4==1 || x%4==2) ret[0]=1; 
-    for (int i=1; i<31; i++) {
-        ll m=x%(1ll<<(i+1));
-        if ((1ll<<i)<=m && (m%2==0)) ret[i]=1;
-    }
-    return ret;
-}
-
-void solve() {
-    ll x,y;
-    cin>>x>>y;
-
-    vector<bool> a=f(x-1), b=f(y);
-    ll ans=0;
-    for (int i=0; i<31; i++) {
-        if (a[i]^b[i]) ans+=(1<<i);
-    }
-    cout<<ans<<endl;
-}
 int main() {
     fio();
-    int t;
-    cin>>t;
-    while (t--) solve();
+    int n,l;
+    cin>>n>>l;
+    vector<pii> a,v;
+    deque<int> d;
+    for (int i=1; i<=n; i++) {
+        int x; cin>>x;
+        if (x<0) v.pb({-x, -1});
+        else v.pb({l-x, 1});
+        a.pb({abs(x),i});
+    }
+    sort(all(a));
+    for (auto [x,i]:a) d.pb(i);
+
+    sort(all(v));
+    int p=0;
+    vector<int> ans;
+    for (auto [x,y]:v) {
+        if (y==1) {
+            ans.pb(d.back());
+            d.pop_back();
+        }
+        else {
+            ans.pb(d.front());
+            d.pop_front();
+        }
+    }
+    cout<<ans.back()<<sp<<v.back().F<<endl;
     return 0;
 }

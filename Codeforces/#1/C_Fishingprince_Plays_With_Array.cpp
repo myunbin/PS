@@ -34,26 +34,58 @@ const int INF = 0x3f3f3f3f;
 const ll LINF = 0x3f3f3f3f3f3f3f3f;
 const int MAX = 101010; // PLZ CHK!
 
-vector<bool> f(ll x) {
-    vector<bool> ret(31,0);
-    if (x%4==1 || x%4==2) ret[0]=1; 
-    for (int i=1; i<31; i++) {
-        ll m=x%(1ll<<(i+1));
-        if ((1ll<<i)<=m && (m%2==0)) ret[i]=1;
-    }
-    return ret;
+ll pw(ll a, ll b) {
+    if (b==0) return 1ll;
+    if (b%2) return a*pow(a,b-1);
+    ll r=pow(a,b/2); return r*r;
 }
 
 void solve() {
-    ll x,y;
-    cin>>x>>y;
-
-    vector<bool> a=f(x-1), b=f(y);
-    ll ans=0;
-    for (int i=0; i<31; i++) {
-        if (a[i]^b[i]) ans+=(1<<i);
+    ll n,m;
+    cin>>n>>m;
+    vector<pll> a,b;
+    for (int i=0; i<n; i++) {
+        ll x; cin>>x;
+        ll cnt=1;
+        while (x%m==0) x/=m, cnt*=m;
+        a.pb({x, cnt});
     }
-    cout<<ans<<endl;
+    int k; cin>>k;
+    for (int i=0; i<k; i++) {
+        ll x; cin>>x;
+        ll cnt=1;
+        while (x%m==0) x/=m, cnt*=m;
+        b.pb({x, cnt});
+    }
+    
+    vector<pll> a1,b1;
+
+    int p=0;
+    while (p<n) {
+        auto [cx,cy]=a[p];
+        ll cnt=0;
+        while (p<n && cx==a[p].F) cnt+=a[p].S, p++;
+        a1.pb({cx, cnt});
+    }
+    p=0;
+    while (p<k) {
+        auto [cx,cy]=b[p];
+        ll cnt=0;
+        while (p<k && cx==b[p].F) cnt+=b[p].S, p++;
+        b1.pb({cx, cnt});
+    }
+    if (sz(a1)==sz(b1)) {
+        for (int i=0; i<sz(a1); i++) {
+            if (a1[i]!=b1[i]) {
+                cout<<"No\n";
+                return;
+            }
+        }
+        cout<<"Yes\n";
+    }
+    else {
+        cout<<"No\n";   
+    }
 }
 int main() {
     fio();

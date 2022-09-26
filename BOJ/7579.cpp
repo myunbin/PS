@@ -34,31 +34,27 @@ const int INF = 0x3f3f3f3f;
 const ll LINF = 0x3f3f3f3f3f3f3f3f;
 const int MAX = 101010; // PLZ CHK!
 
-vector<bool> f(ll x) {
-    vector<bool> ret(31,0);
-    if (x%4==1 || x%4==2) ret[0]=1; 
-    for (int i=1; i<31; i++) {
-        ll m=x%(1ll<<(i+1));
-        if ((1ll<<i)<=m && (m%2==0)) ret[i]=1;
-    }
-    return ret;
-}
-
-void solve() {
-    ll x,y;
-    cin>>x>>y;
-
-    vector<bool> a=f(x-1), b=f(y);
-    ll ans=0;
-    for (int i=0; i<31; i++) {
-        if (a[i]^b[i]) ans+=(1<<i);
-    }
-    cout<<ans<<endl;
-}
 int main() {
     fio();
-    int t;
-    cin>>t;
-    while (t--) solve();
+    int n,m, a[101]={0}, b[101]={0};
+    cin>>n>>m;
+    for (int i=1; i<=n; i++) cin>>a[i];
+    for (int i=1; i<=n; i++) cin>>b[i];
+    
+    int d[101][10101]={0};
+    for (int i=1; i<=n; i++) {
+        for (int j=0; j<10101; j++) {
+            d[i][j]=d[i-1][j];
+            if (j-b[i]>=0) d[i][j]=max(d[i][j], d[i-1][j-b[i]]+a[i]);
+        }
+    }
+
+    int ans=INF;
+    for (int j=0; j<10101; j++) {
+        if (d[n][j]>=m) {
+            cout<<j;
+            return 0;
+        }
+    }
     return 0;
 }

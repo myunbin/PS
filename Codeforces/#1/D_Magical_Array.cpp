@@ -34,26 +34,32 @@ const int INF = 0x3f3f3f3f;
 const ll LINF = 0x3f3f3f3f3f3f3f3f;
 const int MAX = 101010; // PLZ CHK!
 
-vector<bool> f(ll x) {
-    vector<bool> ret(31,0);
-    if (x%4==1 || x%4==2) ret[0]=1; 
-    for (int i=1; i<31; i++) {
-        ll m=x%(1ll<<(i+1));
-        if ((1ll<<i)<=m && (m%2==0)) ret[i]=1;
-    }
-    return ret;
-}
-
 void solve() {
-    ll x,y;
-    cin>>x>>y;
-
-    vector<bool> a=f(x-1), b=f(y);
-    ll ans=0;
-    for (int i=0; i<31; i++) {
-        if (a[i]^b[i]) ans+=(1<<i);
+    int n,m;
+    cin>>n>>m;
+    vector<vector<ll>> a(n,vector<ll>(m+1)), p(n,vector<ll>(m+1));
+    for (int i=0; i<n; i++) {
+        for (int j=1; j<=m; j++) {
+            cin>>a[i][j];
+            p[i][j]=p[i][j-1]+a[i][j];
+        }
     }
-    cout<<ans<<endl;
+    
+    vector<ll> s(n);
+    for (int i=0; i<n; i++) {
+        for (int j=1; j<=m; j++) s[i]+=p[i][j];
+    }
+
+    ll ansi=-1, ans=-1;
+    for (int i=1; i<n-1; i++) {
+        vector<ll> t={s[i-1], s[i], s[i+1]};
+        if (t[0]==t[1] && t[1]==t[2]) continue;
+        if (t[0]!=t[1] && t[0]!=t[2]) ansi=i, ans=t[1]-t[0];
+        else if (t[1]!=t[0] && t[1]!=t[2]) ansi=i+1, ans=t[0]-t[1];
+        else if (t[2]!=t[0] && t[2]!=t[1]) ansi=i+2, ans=t[0]-t[2];
+        break;
+    }
+    cout<<ansi<<sp<<ans<<endl;
 }
 int main() {
     fio();
