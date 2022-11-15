@@ -42,7 +42,7 @@ struct lazy_seg {
     vector<node> tr;
     vector<ll> a;
     int n;
-    void rst(int sz) {n=sz, tr.resize(sz<<2,{0,0}), a.resize(sz+1,0);}
+    void rst(int sz) {n=sz, tr.resize((sz+1)<<2,{0,0}), a.resize(sz+1,0);}
 
     void prp(int nd, int s, int e) {
         if (tr[nd].lz!=0) {
@@ -57,7 +57,6 @@ struct lazy_seg {
 
     void upd(int nd, int s, int e, int l, int r, ll d) {
         prp(nd, s, e);        
-
         if (r<s || e<l) return;
         if (l<=s && e<=r) {
             tr[nd].v+=d;
@@ -73,7 +72,7 @@ struct lazy_seg {
         tr[nd].v=max(tr[nd<<1].v, tr[nd<<1|1].v);
     }
     void upd(int l, int r, ll d) {
-        upd(1,1,n,l,r,d);
+        upd(1,0,n,l,r,d);
     }
     ll qry(int nd, int s, int e, int l, int r) {
         prp(nd, s, e);
@@ -83,31 +82,51 @@ struct lazy_seg {
         return max(qry(nd<<1, s, m, l, r), qry(nd<<1|1, m+1, e, l, r));
     }
     ll qry(int l, int r) {
-        return qry(1,1,n,l,r);
+        return qry(1,0,n,l,r);
+    }
+
+    int qry2(int nd, int s, int e) {
+        if (s==e) return s;
+        int m=(s+e)>>1;
+        prp(nd, s, e);
+        prp(nd<<1, s, m);
+        prp(nd<<1|1, m+1, e);
+        ll v1=tr[nd<<1].v, v2=tr[nd<<1|1].v;
+        if (v2>=0) return qry2(nd<<1|1, m+1, e);   
+        return qry2(nd<<1, s, m);
+    }
+
+    int qry2() {
+        return qry2(1,0,n);
     }
 };
 
 int main() {
     fio();
-    int n; cin>>n;
-    lazy_seg sg;
-    sg.rst(n+1);
-    vector<pii> lie(n+1);
-    for (int i=1; i<=n; i++) {
-        cin>>lie[i].F>>lie[i].S;
-        sg.upd(lie[i].F, lie[i].S, 1);
+    int n;
+    cin>>n;
+    lazy_seg sg; sg.rst(n);
+    for (int i=0; i<=n; i++) sg.upd(i,i,-i);
+    
+    vector<pii> ab(n);
+    for (auto &[a,b]:ab) {
+        cin>>a>>b;
+        sg.upd(a,b,1);
     }
-
-    int q; cin>>q;
-    cout<<sg.qry(0,n)<<sp;
+    
+    int q;
+    cin>>q;
+    cout<<sg.qry2()<<sp;
     while (q--) {
-        int p,l,r; 
+        int p,l,r;
         cin>>p>>l>>r;
-        sg.upd(lie[p].F, lie[p].S, -1);
-        sg.upd(l, r, 1);
-        cout<<sg.qry(0,n)<<sp;
-        sg.upd(l, r, -1);
-        sg.upd(lie[p].F, lie[p].S, 1);
+        --p;
+
+        sg.upd(ab[p].F, ab[p].S, -1);
+        ab[p]={l,r};
+        sg.upd(ab[p].F, ab[p].S, 1);
+        cout<<sg.qry2()<<sp;
     }
+    
     return 0;
 }
