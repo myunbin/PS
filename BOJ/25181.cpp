@@ -38,23 +38,26 @@ int main() {
     fio();
     int n;
     cin>>n;
-    vector<pii> a(n);
-    for (auto &[x,y]:a) cin>>x>>y;
-    pii b;
-
-    int dx[]={1,-1,0,0}, dy[]={0,0,1,-1};
-    vector<ll> d;
-    for (auto [x,y]:a) {
-        ll t=abs(x-b.F)+abs(y-b.S);
-        d.pb(t);
+    
+    vector<int> a(n), cnt(MAX,0);
+    vector<pii> b(n);
+    for (int i=0; i<n; i++) {
+        cin>>a[i];
+        cnt[a[i]]++;
+        b[i]={a[i], i};
     }
-
-    for (int i=0; i<4; i++) {
-        pii c={b.F+dx[i], b.S+dy[i]};
-        for (int j=0; j<n; j++) {
-            ll nd=abs(c.F-a[j].F)+abs(c.S-a[j].S);
-            if (nd<)
+    for (int i=0; i<n; i++) {
+        if (cnt[a[i]]*2>n) {
+            cout<<-1;
+            return 0;
         }
     }
+    sort(all(b));
+    for (int i=0; i<=(n-1)/2; i++) {
+        swap(a[b[i].S], a[b[i+(n/2)].S]);
+    }
+
+    for (int x:a) cout<<x<<sp;
+
     return 0;
 }

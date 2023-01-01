@@ -32,29 +32,45 @@ typedef pair<double, int> pdi;
 const ll MOD = 1e9+7;
 const int INF = 0x3f3f3f3f;
 const ll LINF = 0x3f3f3f3f3f3f3f3f;
-const int MAX = 101010; // PLZ CHK!
+const int MAX = 1010101; // PLZ CHK!
+
+ll d[MAX][5];
+int n;
+string s, t="ROCK";
+
+ll pw(ll a, ll b) {
+    if (b==0) return 1;
+    if (b&1) return (a%MOD)*(pw(a, b-1)%MOD)%MOD;
+    ll r=pw(a, b>>1)%MOD; return r*r%MOD;
+}
+
+ll go(int i, int j) {
+    if (j==4) return 1ll;
+    if (i==n) return 0;
+
+    ll &ret=d[i][j];
+    if (ret!=-1) return ret;
+
+    ret=go(i+1, j)%MOD;
+    if (s[i]==t[j]) ret=(ret+go(i+1, j+1))%MOD;
+
+    return ret;
+}
 
 int main() {
     fio();
-    int n;
-    cin>>n;
-    vector<pii> a(n);
-    for (auto &[x,y]:a) cin>>x>>y;
-    pii b;
+    memset(d,-1,sizeof d);
 
-    int dx[]={1,-1,0,0}, dy[]={0,0,1,-1};
-    vector<ll> d;
-    for (auto [x,y]:a) {
-        ll t=abs(x-b.F)+abs(y-b.S);
-        d.pb(t);
-    }
-
-    for (int i=0; i<4; i++) {
-        pii c={b.F+dx[i], b.S+dy[i]};
-        for (int j=0; j<n; j++) {
-            ll nd=abs(c.F-a[j].F)+abs(c.S-a[j].S);
-            if (nd<)
+    cin>>n>>s;
+    
+    ll ans=0;
+    for (int i=0; i<n; i++) {
+        if (s[i]=='R') {
+            ll p=pw(2,i)%MOD;
+            ll d=go(i+1,1)%MOD;
+            ans=(ans+(p*d)%MOD)%MOD;
         }
     }
+    cout<<ans;
     return 0;
 }

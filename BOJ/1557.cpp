@@ -32,29 +32,45 @@ typedef pair<double, int> pdi;
 const ll MOD = 1e9+7;
 const int INF = 0x3f3f3f3f;
 const ll LINF = 0x3f3f3f3f3f3f3f3f;
-const int MAX = 101010; // PLZ CHK!
+const int MAX = 100001; // PLZ CHK!
+
+ll k;
+vector<ll> s;
+vector<bool> c(MAX, 0);
+int n;
+
+ll get(int i, ll x, ll y) {
+    if (i==n || x*s[i]>y) return 0;
+    return (y/(x*s[i]))-get(i+1, x*s[i], y)+get(i+1, x, y);   
+}
 
 int main() {
     fio();
-    int n;
-    cin>>n;
-    vector<pii> a(n);
-    for (auto &[x,y]:a) cin>>x>>y;
-    pii b;
-
-    int dx[]={1,-1,0,0}, dy[]={0,0,1,-1};
-    vector<ll> d;
-    for (auto [x,y]:a) {
-        ll t=abs(x-b.F)+abs(y-b.S);
-        d.pb(t);
+    
+    for (ll i=2; i<MAX; i++) {
+        if (c[i]) continue;
+        s.pb(i*i);
+        for (ll j=i+i; j<MAX; j+=i) c[i]=1;
     }
 
-    for (int i=0; i<4; i++) {
-        pii c={b.F+dx[i], b.S+dy[i]};
-        for (int j=0; j<n; j++) {
-            ll nd=abs(c.F-a[j].F)+abs(c.S-a[j].S);
-            if (nd<)
+    for (ll x:s) cout<<x<<sp;
+    cout<<endl;
+
+    int n=sz(s);
+
+    cin>>k;
+    
+    ll l=0, r=1ll*(2e9);
+    ll ans=r;
+    while (l<=r) {
+        ll m=(l+r)>>1;
+        ll ok=m-get(0, 1, m);
+        if (ok>=k) {
+            ans=m;
+            r=m-1;
         }
+        else l=m+1;
     }
+    cout<<ans;
     return 0;
 }

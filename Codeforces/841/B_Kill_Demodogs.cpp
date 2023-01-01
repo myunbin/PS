@@ -28,33 +28,32 @@ typedef tuple<int, int, int> tpi;
 typedef tuple<ll, ll, ll> tpl;
 typedef pair<double, ll> pdl;
 typedef pair<double, int> pdi;
+typedef unsigned long long ull;
 
-const ll MOD = 1e9+7;
+const ull MOD = 1e9+7;
 const int INF = 0x3f3f3f3f;
 const ll LINF = 0x3f3f3f3f3f3f3f3f;
 const int MAX = 101010; // PLZ CHK!
 
+
+ull pw(ull a, ull b) {
+    if (b==0) return 1;
+    if (b&1) return a*pw(a,b-1)%MOD;
+    ll r=pw(a,b>>1); return r*r%MOD;
+}
+void solve() {
+    ull n;
+    cin>>n;
+    ull ans=n*(n+1)%MOD*(4*n-1)%MOD;
+    ans=(ans*pw(6,MOD-2))%MOD;
+    ans=(ans*2022)%MOD;
+    cout<<ans<<endl;
+}
+
 int main() {
     fio();
-    int n;
-    cin>>n;
-    vector<pii> a(n);
-    for (auto &[x,y]:a) cin>>x>>y;
-    pii b;
-
-    int dx[]={1,-1,0,0}, dy[]={0,0,1,-1};
-    vector<ll> d;
-    for (auto [x,y]:a) {
-        ll t=abs(x-b.F)+abs(y-b.S);
-        d.pb(t);
-    }
-
-    for (int i=0; i<4; i++) {
-        pii c={b.F+dx[i], b.S+dy[i]};
-        for (int j=0; j<n; j++) {
-            ll nd=abs(c.F-a[j].F)+abs(c.S-a[j].S);
-            if (nd<)
-        }
-    }
+    int t;
+    cin>>t;
+    while (t--) solve();
     return 0;
 }

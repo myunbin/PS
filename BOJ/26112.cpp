@@ -32,29 +32,33 @@ typedef pair<double, int> pdi;
 const ll MOD = 1e9+7;
 const int INF = 0x3f3f3f3f;
 const ll LINF = 0x3f3f3f3f3f3f3f3f;
-const int MAX = 101010; // PLZ CHK!
+const int MAX = 555; // PLZ CHK!
 
 int main() {
     fio();
-    int n;
-    cin>>n;
-    vector<pii> a(n);
-    for (auto &[x,y]:a) cin>>x>>y;
-    pii b;
+    int n,p,q;
+    vector<string> a,b,c;
+    int d[MAX][MAX][MAX]={0};
 
-    int dx[]={1,-1,0,0}, dy[]={0,0,1,-1};
-    vector<ll> d;
-    for (auto [x,y]:a) {
-        ll t=abs(x-b.F)+abs(y-b.S);
-        d.pb(t);
-    }
+    cin>>n>>p>>q;
+    a.resize(n+1), b.resize(p+1), c.resize(q+1);
+    for (int i=1; i<=n; i++) cin>>a[i];
+    for (int i=1; i<=p; i++) cin>>b[i];
+    for (int i=1; i<=q; i++) cin>>c[i];
 
-    for (int i=0; i<4; i++) {
-        pii c={b.F+dx[i], b.S+dy[i]};
-        for (int j=0; j<n; j++) {
-            ll nd=abs(c.F-a[j].F)+abs(c.S-a[j].S);
-            if (nd<)
+    for (int i=0; i<=n; i++) {
+        for (int j=0; j<=p; j++) {
+            for (int k=0; k<=q; k++) {
+                if (i>0) d[i][j][k]=max(d[i][j][k], d[i-1][j][k]);
+                if (j>0) d[i][j][k]=max(d[i][j][k], d[i][j-1][k]);
+                if (k>0) d[i][j][k]=max(d[i][j][k], d[i][j][k-1]);
+                
+                if (i>0 && j>0) d[i][j][k]=max(d[i][j][k], d[i-1][j-1][k]+(a[i]==b[j]));
+                if (i>0 && k>0) d[i][j][k]=max(d[i][j][k], d[i-1][j][k-1]+(a[i]==c[k]));   
+            }
         }
     }
+
+    cout<<d[n][p][q];
     return 0;
 }

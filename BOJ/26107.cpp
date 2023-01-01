@@ -36,25 +36,24 @@ const int MAX = 101010; // PLZ CHK!
 
 int main() {
     fio();
-    int n;
-    cin>>n;
-    vector<pii> a(n);
-    for (auto &[x,y]:a) cin>>x>>y;
-    pii b;
-
-    int dx[]={1,-1,0,0}, dy[]={0,0,1,-1};
-    vector<ll> d;
-    for (auto [x,y]:a) {
-        ll t=abs(x-b.F)+abs(y-b.S);
-        d.pb(t);
+    int n,k;
+    cin>>n>>k;
+    int mx=0;
+    vector<ll> p(n+1);
+    for (int i=1; i<=n; i++) {
+        int s,e;
+        cin>>s>>e;
+        if (mx<s) p[i]=s-mx;
+        mx=max(mx,e);
+        if (i==1) p[i]=0;
     }
+    for (int i=1; i<=n; i++) p[i]+=p[i-1];
 
-    for (int i=0; i<4; i++) {
-        pii c={b.F+dx[i], b.S+dy[i]};
-        for (int j=0; j<n; j++) {
-            ll nd=abs(c.F-a[j].F)+abs(c.S-a[j].S);
-            if (nd<)
-        }
-    }
+    vector<int> sq(k+1); sq[0]=1;
+    for (int i=1; i<=k; i++) cin>>sq[i];
+
+    ll ans=0;
+    for (int i=1; i<=k; i++) ans+=abs(p[sq[i]]-p[sq[i-1]]);
+    cout<<ans;
     return 0;
 }

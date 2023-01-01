@@ -34,27 +34,18 @@ const int INF = 0x3f3f3f3f;
 const ll LINF = 0x3f3f3f3f3f3f3f3f;
 const int MAX = 101010; // PLZ CHK!
 
-int main() {
-    fio();
+void solve() {
     int n;
     cin>>n;
-    vector<pii> a(n);
-    for (auto &[x,y]:a) cin>>x>>y;
-    pii b;
-
-    int dx[]={1,-1,0,0}, dy[]={0,0,1,-1};
-    vector<ll> d;
-    for (auto [x,y]:a) {
-        ll t=abs(x-b.F)+abs(y-b.S);
-        d.pb(t);
-    }
-
-    for (int i=0; i<4; i++) {
-        pii c={b.F+dx[i], b.S+dy[i]};
-        for (int j=0; j<n; j++) {
-            ll nd=abs(c.F-a[j].F)+abs(c.S-a[j].S);
-            if (nd<)
-        }
-    }
+    vector<ll> a(n);
+    ll ans=1;
+    for (ll &x:a) cin>>x, ans*=x;
+    cout<<1ll*2022*(ans+n-1)<<endl;
+}
+int main() {
+    fio();
+    int t;
+    cin>>t;
+    while (t--) solve();
     return 0;
 }

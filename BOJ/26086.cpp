@@ -36,25 +36,45 @@ const int MAX = 101010; // PLZ CHK!
 
 int main() {
     fio();
-    int n;
-    cin>>n;
-    vector<pii> a(n);
-    for (auto &[x,y]:a) cin>>x>>y;
-    pii b;
-
-    int dx[]={1,-1,0,0}, dy[]={0,0,1,-1};
-    vector<ll> d;
-    for (auto [x,y]:a) {
-        ll t=abs(x-b.F)+abs(y-b.S);
-        d.pb(t);
-    }
-
-    for (int i=0; i<4; i++) {
-        pii c={b.F+dx[i], b.S+dy[i]};
-        for (int j=0; j<n; j++) {
-            ll nd=abs(c.F-a[j].F)+abs(c.S-a[j].S);
-            if (nd<)
+    int n,q,k;
+    cin>>n>>q>>k;
+    vector<pii> op(q);
+    int si=-1;
+    for (int i=0; i<q; i++) {
+        cin>>op[i].F;
+        if (op[i].F==0) cin>>op[i].S;
+        else {
+            if (op[i].F==1) si=i;
+            op[i].S=op[i].F;
         }
     }
+
+    vector<int> srt;
+    for (int i=0; i<si; i++) {
+        if (op[i].F==0) srt.pb(op[i].S);
+    }
+    sort(all(srt));
+
+    bool frt=1, lst=0;
+
+    deque<int> dq;
+    for (int x:srt) dq.push_back(x);
+    
+    for (int i=si+1; i<q; i++) {
+        if (op[i].F==0) {
+            if (frt) dq.push_front(op[i].S);
+            else dq.push_back(op[i].S);
+        }
+        else frt^=1, lst^=1;
+    }
+    int ans=0;
+    if (frt) {
+        while (k--) ans=dq.front(), dq.pop_front();
+    }
+    else {
+        while (k--) ans=dq.back(), dq.pop_back();
+    }
+
+    cout<<ans;
     return 0;
 }

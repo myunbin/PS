@@ -34,27 +34,46 @@ const int INF = 0x3f3f3f3f;
 const ll LINF = 0x3f3f3f3f3f3f3f3f;
 const int MAX = 101010; // PLZ CHK!
 
+int n,k;
+vector<int> a;
+
+bool ok(int x) {
+    unordered_map<int,int> mp1, mp2;
+    for (int i=0; i<n; i++) mp2[a[i]]++;
+    
+    for (int i=0; i<x; i++) {
+        mp1[a[i]]++;
+        if (--mp2[a[i]]==0) mp2.erase(a[i]);    
+        if (sz(mp1)==k && sz(mp2)==k) return 1;
+    }
+
+    for (int i=1; i<=n-x; i++) {
+        mp1[a[i+x-1]]++;
+        if (--mp2[a[i+x-1]]==0) mp2.erase(a[i+x-1]);
+
+        if (--mp1[a[i-1]]==0) mp1.erase(a[i-1]);
+        mp2[a[i-1]]++;
+
+        if (sz(mp1)==k && sz(mp2)==k) return 1;
+    }
+    return 0;
+}
 int main() {
     fio();
-    int n;
-    cin>>n;
-    vector<pii> a(n);
-    for (auto &[x,y]:a) cin>>x>>y;
-    pii b;
-
-    int dx[]={1,-1,0,0}, dy[]={0,0,1,-1};
-    vector<ll> d;
-    for (auto [x,y]:a) {
-        ll t=abs(x-b.F)+abs(y-b.S);
-        d.pb(t);
-    }
-
-    for (int i=0; i<4; i++) {
-        pii c={b.F+dx[i], b.S+dy[i]};
-        for (int j=0; j<n; j++) {
-            ll nd=abs(c.F-a[j].F)+abs(c.S-a[j].S);
-            if (nd<)
+    cin>>n>>k;
+    a.resize(n);
+    for (int &x:a) cin>>x;
+    
+    int l=k, r=n-k;
+    int ans=0;
+    while (l<=r) {
+        int m=(l+r)>>1;
+        if (ok(m)) {
+            ans=m;
+            r=m-1;
         }
+        else l=m+1;
     }
+    cout<<ans;
     return 0;
 }

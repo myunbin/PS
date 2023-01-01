@@ -36,25 +36,25 @@ const int MAX = 101010; // PLZ CHK!
 
 int main() {
     fio();
-    int n;
-    cin>>n;
-    vector<pii> a(n);
-    for (auto &[x,y]:a) cin>>x>>y;
-    pii b;
-
-    int dx[]={1,-1,0,0}, dy[]={0,0,1,-1};
-    vector<ll> d;
-    for (auto [x,y]:a) {
-        ll t=abs(x-b.F)+abs(y-b.S);
-        d.pb(t);
+    int n,k;
+    cin>>n>>k;
+    int a[101][10101]={0}, d[10101]={0};
+    for (int i=1; i<=n; i++) {
+        for (int j=1; j<=k; j++) 
+            cin>>a[i][j];
     }
 
-    for (int i=0; i<4; i++) {
-        pii c={b.F+dx[i], b.S+dy[i]};
-        for (int j=0; j<n; j++) {
-            ll nd=abs(c.F-a[j].F)+abs(c.S-a[j].S);
-            if (nd<)
+    int pmx[10101]={0}, smx[10101]={0};
+    for (int i=1; i<=n; i++) {
+        for (int j=1; j<=k; j++) {
+            d[j]=max(pmx[j-1], smx[j+1])+a[i][j];
         }
+
+        for (int j=1; j<=k; j++) pmx[j]=smx[j]=0;
+        for (int j=1; j<=k; j++) pmx[j]=max(pmx[j-1], d[j]);
+        for (int j=k; j>=1; j--) smx[j]=max(smx[j+1], d[j]);
     }
+
+    cout<<*max_element(d, d+10101);
     return 0;
 }

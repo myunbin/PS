@@ -34,27 +34,31 @@ const int INF = 0x3f3f3f3f;
 const ll LINF = 0x3f3f3f3f3f3f3f3f;
 const int MAX = 101010; // PLZ CHK!
 
+ll pw(ll a, ll b){
+    if (b==0) return 1;
+    if (b&1) return a*pw(a,b-1)%MOD;
+    ll r=pw(a,b>>1)%MOD; return r*r%MOD;
+}
+
 int main() {
     fio();
     int n;
-    cin>>n;
-    vector<pii> a(n);
-    for (auto &[x,y]:a) cin>>x>>y;
-    pii b;
-
-    int dx[]={1,-1,0,0}, dy[]={0,0,1,-1};
-    vector<ll> d;
-    for (auto [x,y]:a) {
-        ll t=abs(x-b.F)+abs(y-b.S);
-        d.pb(t);
+    string s;
+    cin>>n>>s;
+    vector<int> w,h,e;
+    for (int i=0; i<n; i++) {
+        if (s[i]=='W') w.pb(i);
+        if (s[i]=='H') h.pb(i);
+        if (s[i]=='E') e.pb(i);
     }
 
-    for (int i=0; i<4; i++) {
-        pii c={b.F+dx[i], b.S+dy[i]};
-        for (int j=0; j<n; j++) {
-            ll nd=abs(c.F-a[j].F)+abs(c.S-a[j].S);
-            if (nd<)
-        }
+    ll ans=0;
+    for (int hi:h) {
+        ll wi=ub(all(w), hi)-w.begin();
+        ll ei=sz(e)-(lb(all(e), hi)-e.begin());
+        ll t=((wi%MOD)*(pw(2,ei)-ei-1+MOD)%MOD)%MOD;
+        ans=(ans+t)%MOD;
     }
+    cout<<ans;
     return 0;
 }

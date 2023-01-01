@@ -34,27 +34,43 @@ const int INF = 0x3f3f3f3f;
 const ll LINF = 0x3f3f3f3f3f3f3f3f;
 const int MAX = 101010; // PLZ CHK!
 
-int main() {
-    fio();
+vector<ll> pw;
+vector<ll> cnt(1<<20, 0);
+
+void solve() {
     int n;
     cin>>n;
-    vector<pii> a(n);
-    for (auto &[x,y]:a) cin>>x>>y;
-    pii b;
-
-    int dx[]={1,-1,0,0}, dy[]={0,0,1,-1};
-    vector<ll> d;
-    for (auto [x,y]:a) {
-        ll t=abs(x-b.F)+abs(y-b.S);
-        d.pb(t);
+    vector<ll> a(n+1), p(n+1);
+    for (int i=1; i<=n; i++) {
+        cin>>a[i];
+        p[i]=(p[i-1]^a[i]);
     }
 
-    for (int i=0; i<4; i++) {
-        pii c={b.F+dx[i], b.S+dy[i]};
-        for (int j=0; j<n; j++) {
-            ll nd=abs(c.F-a[j].F)+abs(c.S-a[j].S);
-            if (nd<)
+    cnt[0]=1;
+    ll ans=0;
+    for (int i=1; i<=n; i++) {
+        for (ll x:pw) {
+            ll fd=p[i]^x;
+            ans+=cnt[fd];
         }
+        cnt[p[i]]++;
     }
+
+    for (int i=0; i<=n; i++) cnt[p[i]]=0;
+    cout<<(1ll*n*(n+1)/2-ans)<<endl;
+}
+
+void init() {
+    for (ll i=0; i*i<=(1<<19); i++) {
+        pw.pb(i*i);
+    }
+}
+
+int main() {
+    fio();
+    init();
+    int t;
+    cin>>t;
+    while (t--) solve();
     return 0;
 }

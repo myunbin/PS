@@ -32,29 +32,34 @@ typedef pair<double, int> pdi;
 const ll MOD = 1e9+7;
 const int INF = 0x3f3f3f3f;
 const ll LINF = 0x3f3f3f3f3f3f3f3f;
-const int MAX = 101010; // PLZ CHK!
+const int MAX = 10101; // PLZ CHK!
 
 int main() {
     fio();
-    int n;
-    cin>>n;
-    vector<pii> a(n);
-    for (auto &[x,y]:a) cin>>x>>y;
-    pii b;
+    int n,t,m,s,e;
+    cin>>n>>t>>m>>s>>e;
+    
+    ll d[1010][10101];
+    for (int i=0; i<1010; i++) fill(d[i], d[i]+10101, LINF);
+    d[0][s]=0;
 
-    int dx[]={1,-1,0,0}, dy[]={0,0,1,-1};
-    vector<ll> d;
-    for (auto [x,y]:a) {
-        ll t=abs(x-b.F)+abs(y-b.S);
-        d.pb(t);
-    }
+    for (int i=1; i<=t; i++) {
+        vector<pii> g[10101];
+        for (int j=0; j<m; j++) {
+            int u,v,w;
+            cin>>u>>v>>w;
+            g[u].pb({v,w});
+            g[v].pb({u,w});
+        }
 
-    for (int i=0; i<4; i++) {
-        pii c={b.F+dx[i], b.S+dy[i]};
         for (int j=0; j<n; j++) {
-            ll nd=abs(c.F-a[j].F)+abs(c.S-a[j].S);
-            if (nd<)
+            d[i][j]=d[i-1][j];
+            for (auto [k,c]:g[j]) {
+                d[i][j]=min(d[i][j], d[i-1][k]+c);
+            }
         }
     }
+
+    cout<<(d[t][e]==LINF?-1:d[t][e]);
     return 0;
 }

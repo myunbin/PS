@@ -34,27 +34,15 @@ const int INF = 0x3f3f3f3f;
 const ll LINF = 0x3f3f3f3f3f3f3f3f;
 const int MAX = 101010; // PLZ CHK!
 
+ll pw(ll a, ll b) {
+    if (b==0) return 1;
+    if (b&1) return a*pw(a,b-1)%MOD;
+    ll r=pw(a,b>>1)%MOD; return r*r%MOD;
+}
+
 int main() {
     fio();
-    int n;
-    cin>>n;
-    vector<pii> a(n);
-    for (auto &[x,y]:a) cin>>x>>y;
-    pii b;
-
-    int dx[]={1,-1,0,0}, dy[]={0,0,1,-1};
-    vector<ll> d;
-    for (auto [x,y]:a) {
-        ll t=abs(x-b.F)+abs(y-b.S);
-        d.pb(t);
-    }
-
-    for (int i=0; i<4; i++) {
-        pii c={b.F+dx[i], b.S+dy[i]};
-        for (int j=0; j<n; j++) {
-            ll nd=abs(c.F-a[j].F)+abs(c.S-a[j].S);
-            if (nd<)
-        }
-    }
+    ll n,m,a; cin>>n>>m>>a;
+    cout<<pw(m,n-1);    
     return 0;
 }

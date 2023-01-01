@@ -36,25 +36,26 @@ const int MAX = 101010; // PLZ CHK!
 
 int main() {
     fio();
-    int n;
-    cin>>n;
-    vector<pii> a(n);
-    for (auto &[x,y]:a) cin>>x>>y;
-    pii b;
+    ll n,m;
+    cin>>n>>m;
+    vector<ll> x(n),y(m);
+    for (ll &xx:x) cin>>xx;
+    for (ll &yy:y) cin>>yy;
+    
+    vector<ll> a,b;
+    for (int i=1; i<n; i++) a.pb(x[i]-x[i-1]);
+    for (int i=1; i<m; i++) b.pb(y[i]-y[i-1]);
 
-    int dx[]={1,-1,0,0}, dy[]={0,0,1,-1};
-    vector<ll> d;
-    for (auto [x,y]:a) {
-        ll t=abs(x-b.F)+abs(y-b.S);
-        d.pb(t);
+    n--, m--;
+    ll t1=0, t2=0;
+    for (ll i=0; i<n; i++) {
+        ll t=((((i+1)*(n-i))%MOD)*a[i])%MOD;
+        t1=(t1+t)%MOD;
     }
-
-    for (int i=0; i<4; i++) {
-        pii c={b.F+dx[i], b.S+dy[i]};
-        for (int j=0; j<n; j++) {
-            ll nd=abs(c.F-a[j].F)+abs(c.S-a[j].S);
-            if (nd<)
-        }
+    for (ll i=0; i<m; i++) {
+        ll t=((((i+1)*(m-i))%MOD)*b[i])%MOD;
+        t2=(t2+t)%MOD;
     }
+    cout<<(t1*t2)%MOD;
     return 0;
 }

@@ -34,27 +34,61 @@ const int INF = 0x3f3f3f3f;
 const ll LINF = 0x3f3f3f3f3f3f3f3f;
 const int MAX = 101010; // PLZ CHK!
 
+int n,m;
+int p[MAX];
+
+int fd(int a) {
+    if (a==p[a]) return a;
+    return p[a]=fd(p[a]);
+}
+
+bool mg(int a, int b) {
+    a=fd(a), b=fd(b);
+    if (a==b) return 0;
+    p[b]=a; return 1;
+}
+
+struct ed{
+    int u,v;
+    double pr;
+};
+
 int main() {
     fio();
-    int n;
-    cin>>n;
-    vector<pii> a(n);
-    for (auto &[x,y]:a) cin>>x>>y;
-    pii b;
+    for (int i=0; i<MAX; i++) p[i]=i;
 
-    int dx[]={1,-1,0,0}, dy[]={0,0,1,-1};
-    vector<ll> d;
-    for (auto [x,y]:a) {
-        ll t=abs(x-b.F)+abs(y-b.S);
-        d.pb(t);
-    }
+    cin>>n>>m;
+    
+    vector<ed> e(m);
+    for (auto &[u,v,pr]:e) cin>>u>>v>>pr;
+    sort(all(e), [](ed a, ed b){
+        return a.pr>b.pr;
+    });
 
-    for (int i=0; i<4; i++) {
-        pii c={b.F+dx[i], b.S+dy[i]};
-        for (int j=0; j<n; j++) {
-            ll nd=abs(c.F-a[j].F)+abs(c.S-a[j].S);
-            if (nd<)
+    int q;
+    cin>>q;
+    typedef pair<int, double> pid;
+    vector<pid> qry(q);
+    for (int i=0; i<q; i++) {
+        cin>>qry[i].S;
+        qry[i].F=i;
+    }  
+
+    sort(all(qry), [](pid a, pid b){
+        return a.S>b.S;
+    });
+
+    vector<int> ans(q);
+    int cnt=n;
+    int i=0;
+    for (auto [idx, qpr]:qry) {
+        while (i<m && e[i].pr>=qpr) {
+            if (mg(e[i].u, e[i].v)) cnt--;
+            i++;
         }
+        ans[idx]=max(1,cnt);
     }
+
+    for (int x:ans) cout<<x<<endl;
     return 0;
 }

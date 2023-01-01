@@ -32,29 +32,42 @@ typedef pair<double, int> pdi;
 const ll MOD = 1e9+7;
 const int INF = 0x3f3f3f3f;
 const ll LINF = 0x3f3f3f3f3f3f3f3f;
-const int MAX = 101010; // PLZ CHK!
+const int MAX = 202020; // PLZ CHK!
+
+int n, c[MAX], d[MAX];
+int ans;
+vector<int> g[MAX];
+
+void dfs(int cur, int prv) {
+    if (d[prv]!=c[cur]) {
+        ans++;
+        d[cur]=c[cur];
+    }
+    else {
+        d[cur]=c[cur];
+    }
+
+    for (int nxt:g[cur]) {
+        if (nxt==prv) continue;
+        dfs(nxt, cur);
+    }
+}
 
 int main() {
     fio();
-    int n;
     cin>>n;
-    vector<pii> a(n);
-    for (auto &[x,y]:a) cin>>x>>y;
-    pii b;
-
-    int dx[]={1,-1,0,0}, dy[]={0,0,1,-1};
-    vector<ll> d;
-    for (auto [x,y]:a) {
-        ll t=abs(x-b.F)+abs(y-b.S);
-        d.pb(t);
+    for (int i=1; i<=n; i++) cin>>c[i];
+    for (int i=0; i<n-1; i++) {
+        int u,v; 
+        cin>>u>>v;
+        g[u].pb(v);
+        g[v].pb(u);
     }
 
-    for (int i=0; i<4; i++) {
-        pii c={b.F+dx[i], b.S+dy[i]};
-        for (int j=0; j<n; j++) {
-            ll nd=abs(c.F-a[j].F)+abs(c.S-a[j].S);
-            if (nd<)
-        }
-    }
+    dfs(1,0);
+
+    // for (int i=1; i<=n; i++) cout<<d[i]<<sp;
+
+    cout<<ans;
     return 0;
 }

@@ -36,25 +36,41 @@ const int MAX = 101010; // PLZ CHK!
 
 int main() {
     fio();
+
     int n;
-    cin>>n;
-    vector<pii> a(n);
-    for (auto &[x,y]:a) cin>>x>>y;
-    pii b;
-
-    int dx[]={1,-1,0,0}, dy[]={0,0,1,-1};
-    vector<ll> d;
-    for (auto [x,y]:a) {
-        ll t=abs(x-b.F)+abs(y-b.S);
-        d.pb(t);
+    string a;
+    cin>>n>>a;
+    vector<ll> r,o,c,k;
+    for (int i=0; i<n; i++) {
+        if (a[i]=='R') r.pb(i);
+        if (a[i]=='O') o.pb(i);
+        if (a[i]=='C') c.pb(i);
+        if (a[i]=='K') k.pb(i);
+    }
+    if (r.empty() || o.empty() || c.empty() || k.empty()) {
+        cout<<0;
+        return 0;
     }
 
-    for (int i=0; i<4; i++) {
-        pii c={b.F+dx[i], b.S+dy[i]};
-        for (int j=0; j<n; j++) {
-            ll nd=abs(c.F-a[j].F)+abs(c.S-a[j].S);
-            if (nd<)
-        }
+    vector<ll> oo, cc;
+    for (int oi:o) {
+        ll ri=ub(all(r), oi)-r.begin();
+        oo.pb(ri);
     }
+    for (int ci:c) {
+        ll ki=sz(k)-(lb(all(k), ci)-k.begin());
+        cc.pb(ki);
+    }
+    for (int i=1; i<sz(cc); i++) cc[i]+=cc[i-1];
+
+    ll ans=0;
+    for (int i=0; i<sz(o); i++) {
+        ll t1=oo[i];
+        int si=lb(all(c), k[i])-c.begin();
+        ll t2=cc.back()-(si>0?cc[si-1]:0);
+        
+    }
+
+    cout<<ans;
     return 0;
 }

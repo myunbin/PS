@@ -32,29 +32,36 @@ typedef pair<double, int> pdi;
 const ll MOD = 1e9+7;
 const int INF = 0x3f3f3f3f;
 const ll LINF = 0x3f3f3f3f3f3f3f3f;
-const int MAX = 101010; // PLZ CHK!
+const int MAX = 333; // PLZ CHK!
+
+string s;
+int n;
+ll d[MAX][MAX];
+
+ll go(int i, int j) {
+    if (i>j) return 1;
+    if (i==j) return 0;
+    if (i+1==j) return (s[i]!=s[j]);
+
+    ll &ret=d[i][j];
+    if (ret!=-1) return ret;
+
+    ret=0;
+    for (int k=i; k<=j; k++) {
+        if (s[i]!=s[k]) {
+            ll t=(go(i+1, k-1)*go(k+1, j))%MOD;
+            ret=(ret+t)%MOD;
+        }
+    }
+    return ret;
+}
 
 int main() {
     fio();
-    int n;
-    cin>>n;
-    vector<pii> a(n);
-    for (auto &[x,y]:a) cin>>x>>y;
-    pii b;
-
-    int dx[]={1,-1,0,0}, dy[]={0,0,1,-1};
-    vector<ll> d;
-    for (auto [x,y]:a) {
-        ll t=abs(x-b.F)+abs(y-b.S);
-        d.pb(t);
-    }
-
-    for (int i=0; i<4; i++) {
-        pii c={b.F+dx[i], b.S+dy[i]};
-        for (int j=0; j<n; j++) {
-            ll nd=abs(c.F-a[j].F)+abs(c.S-a[j].S);
-            if (nd<)
-        }
-    }
+    memset(d,-1,sizeof d);
+    cin>>s;
+    n=sz(s);
+    if (n&1) cout<<0;
+    else cout<<go(0,n-1)%MOD;
     return 0;
 }

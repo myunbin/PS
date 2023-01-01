@@ -34,27 +34,51 @@ const int INF = 0x3f3f3f3f;
 const ll LINF = 0x3f3f3f3f3f3f3f3f;
 const int MAX = 101010; // PLZ CHK!
 
-int main() {
-    fio();
-    int n;
-    cin>>n;
-    vector<pii> a(n);
-    for (auto &[x,y]:a) cin>>x>>y;
-    pii b;
-
-    int dx[]={1,-1,0,0}, dy[]={0,0,1,-1};
-    vector<ll> d;
-    for (auto [x,y]:a) {
-        ll t=abs(x-b.F)+abs(y-b.S);
-        d.pb(t);
-    }
-
-    for (int i=0; i<4; i++) {
-        pii c={b.F+dx[i], b.S+dy[i]};
-        for (int j=0; j<n; j++) {
-            ll nd=abs(c.F-a[j].F)+abs(c.S-a[j].S);
-            if (nd<)
+bool ok(int x, int n, int m, vector<vector<int>> &a) {
+    vector<vector<int>> p(n+1,vector<int>(m+1,0));
+    for (int i=1; i<=n; i++) {
+        for (int j=1; j<=m; j++) {
+            int t=(a[i][j]<x);
+            p[i][j]=p[i-1][j]+p[i][j-1]-p[i-1][j-1]+t;
         }
     }
+
+    for (int i=1; i+x-1<=n; i++) {
+        for (int j=1; j+x-1<=m; j++) {
+            int x1=i, x2=i+x-1, y1=j, y2=j+x-1;
+            int q=p[x2][y2]-p[x2][y1-1]-p[x1-1][y2]+p[x1-1][y1-1];
+            if (q==0) return 1;
+        }
+    }
+    return 0;
+}
+void solve() {
+    int n,m;
+    cin>>n>>m;
+    vector<vector<int>> a(n+1,vector<int>(m+1,0));
+    for (int i=1; i<=n; i++) {
+        for (int j=1; j<=m; j++) {
+            cin>>a[i][j];
+        }
+    }
+
+    int le=1, ri=min(n,m);
+    int ans=1;
+    while (le<=ri) {
+        int md=(le+ri)>>1;
+        if (ok(md, n,m, a)) {
+            ans=md;
+            le=md+1;
+        }
+        else ri=md-1;
+    }
+    cout<<ans<<endl;
+}
+int main() {
+    fio();
+    int t;
+    cin>>t;
+    while (t--) solve();
+
     return 0;
 }

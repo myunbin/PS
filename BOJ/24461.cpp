@@ -34,27 +34,56 @@ const int INF = 0x3f3f3f3f;
 const ll LINF = 0x3f3f3f3f3f3f3f3f;
 const int MAX = 101010; // PLZ CHK!
 
+
 int main() {
     fio();
     int n;
-    cin>>n;
-    vector<pii> a(n);
-    for (auto &[x,y]:a) cin>>x>>y;
-    pii b;
+    vector<int> g[MAX], deg(MAX);
 
-    int dx[]={1,-1,0,0}, dy[]={0,0,1,-1};
-    vector<ll> d;
-    for (auto [x,y]:a) {
-        ll t=abs(x-b.F)+abs(y-b.S);
-        d.pb(t);
+    cin>>n;
+    for (int i=0; i<n-1; i++) {
+        int u,v;
+        cin>>u>>v;
+        u++,v++;
+        g[u].pb(v), g[v].pb(u);
+        deg[u]++, deg[v]++;
     }
 
-    for (int i=0; i<4; i++) {
-        pii c={b.F+dx[i], b.S+dy[i]};
-        for (int j=0; j<n; j++) {
-            ll nd=abs(c.F-a[j].F)+abs(c.S-a[j].S);
-            if (nd<)
+    queue<int> curq;
+    vector<int> vst(MAX, 0);
+    for (int i=1; i<=n; i++) {
+        if (deg[i]==1) {
+            curq.push(i);
+            vst[i]=1;
         }
     }
+
+    while (1) {
+        if (sz(curq)<=2) {
+            vector<int> ans;
+            while (!curq.empty()) ans.pb(curq.front()-1), curq.pop();
+            for (int i=1; i<=n; i++) if (!vst[i]) ans.pb(i-1);
+            sort(all(ans));
+            for (int x:ans) cout<<x<<sp;
+
+            return 0;
+        }
+
+        queue<int> nxtq;
+        while (!curq.empty()) {
+            int cur=curq.front(); curq.pop();
+            for (int nxt:g[cur]) {
+                if (vst[nxt]) continue;
+                if ((--deg[nxt])==1) {
+                    nxtq.push(nxt);
+                    vst[nxt]=1;
+                }
+            }
+        }
+
+        while (!nxtq.empty()) curq.push(nxtq.front()), nxtq.pop();
+    }
+    
+
     return 0;
 }

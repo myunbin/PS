@@ -34,27 +34,40 @@ const int INF = 0x3f3f3f3f;
 const ll LINF = 0x3f3f3f3f3f3f3f3f;
 const int MAX = 101010; // PLZ CHK!
 
+int d[30][111][111][111];
+
+int go(int i, int x, int y, int z) {
+    if (x>=30) return 0;
+    if (x==0 && y==0 && z==0) return 0;
+
+    int &ret=d[i][x][y][z];
+    if (ret!=-1) return ret;
+
+    if (i%2) {
+        ret=0;
+        if (x>0) ret=min(ret, min(x,i)+go(i+1, max(x-i,0), y, z));
+        if (y>0) ret=min(ret, min(y,i)+go(i+1, x, max(y-i,0), z));
+        if (z>0) ret=min(ret, min(z,i)+go(i+1, x, y, max(z-i,0)));
+    }
+    else {
+        if (x>0) ret=(ret, go(i+1, max(x-i,0), y, z));
+        if (y>0) ret=(ret, go(i+1, x, max(y-i,0), z));
+        if (z>0) ret=max(ret, go(i+1, x, y, max(z-i,0)));
+    }
+
+    return 0;
+}
 int main() {
     fio();
-    int n;
-    cin>>n;
-    vector<pii> a(n);
-    for (auto &[x,y]:a) cin>>x>>y;
-    pii b;
+    memset(d,-1,sizeof d);
 
-    int dx[]={1,-1,0,0}, dy[]={0,0,1,-1};
-    vector<ll> d;
-    for (auto [x,y]:a) {
-        ll t=abs(x-b.F)+abs(y-b.S);
-        d.pb(t);
-    }
+    int a,b,c;
+    cin>>a>>b>>c;
 
-    for (int i=0; i<4; i++) {
-        pii c={b.F+dx[i], b.S+dy[i]};
-        for (int j=0; j<n; j++) {
-            ll nd=abs(c.F-a[j].F)+abs(c.S-a[j].S);
-            if (nd<)
-        }
-    }
+    int f=go(1,a,b,c), s=(a+b+c)-f;
+
+    if (f<s) cout<<"S";
+    else if (f>s) cout<<"Fd";
+    else cout<<"D";
     return 0;
 }

@@ -32,29 +32,34 @@ typedef pair<double, int> pdi;
 const ll MOD = 1e9+7;
 const int INF = 0x3f3f3f3f;
 const ll LINF = 0x3f3f3f3f3f3f3f3f;
-const int MAX = 101010; // PLZ CHK!
+const int MAX = 1010101; // PLZ CHK!
 
-int main() {
-    fio();
-    int n;
-    cin>>n;
-    vector<pii> a(n);
-    for (auto &[x,y]:a) cin>>x>>y;
-    pii b;
-
-    int dx[]={1,-1,0,0}, dy[]={0,0,1,-1};
-    vector<ll> d;
-    for (auto [x,y]:a) {
-        ll t=abs(x-b.F)+abs(y-b.S);
-        d.pb(t);
+vector<ll> solve(ll a){
+    vector<ll> ret;
+    while (a%2==0) {
+        ret.pb(2);
+        a/=2;
     }
-
-    for (int i=0; i<4; i++) {
-        pii c={b.F+dx[i], b.S+dy[i]};
-        for (int j=0; j<n; j++) {
-            ll nd=abs(c.F-a[j].F)+abs(c.S-a[j].S);
-            if (nd<)
+    for (ll i=3; i*i<=a; i+=2) {
+        while (a%i==0) {
+            ret.pb(i);
+            a/=i;
         }
     }
+    if (a>1) ret.pb(a);
+    sort(all(ret), greater<>());
+    return ret;
+}
+int main() {
+    fio();
+    ll a,b;
+    cin>>a>>b;
+    vector<ll> ra=solve(a), rb=solve(b);
+    ll ans=1;
+    for (int i=0; i<min(sz(ra), sz(rb)); i++) {
+        if (ra[i]!=rb[i]) break;
+        ans*=ra[i];
+    }
+    cout<<ans;
     return 0;
 }

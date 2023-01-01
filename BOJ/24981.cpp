@@ -39,22 +39,24 @@ int main() {
     int n;
     cin>>n;
     vector<pii> a(n);
-    for (auto &[x,y]:a) cin>>x>>y;
-    pii b;
-
-    int dx[]={1,-1,0,0}, dy[]={0,0,1,-1};
-    vector<ll> d;
-    for (auto [x,y]:a) {
-        ll t=abs(x-b.F)+abs(y-b.S);
-        d.pb(t);
+    for (auto &[x,y]:a) {
+        char c; cin>>c>>y;
+        x=(c=='L'?0:1);
     }
 
-    for (int i=0; i<4; i++) {
-        pii c={b.F+dx[i], b.S+dy[i]};
-        for (int j=0; j<n; j++) {
-            ll nd=abs(c.F-a[j].F)+abs(c.S-a[j].S);
-            if (nd<)
+    int mx=0;
+    for (auto [x1,y1]:a) {
+        int c=0;
+        for (auto [x2,y2]:a) {
+            if (!x2 && y1<=y2) {
+                c++;
+            }
+            else if (x2 && y1>=y2) {
+                c++;
+            }
         }
+        mx=max(mx, c);
     }
+    cout<<n-mx;
     return 0;
 }

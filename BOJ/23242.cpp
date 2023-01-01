@@ -32,29 +32,45 @@ typedef pair<double, int> pdi;
 const ll MOD = 1e9+7;
 const int INF = 0x3f3f3f3f;
 const ll LINF = 0x3f3f3f3f3f3f3f3f;
-const int MAX = 101010; // PLZ CHK!
+const int MAX = 4040; // PLZ CHK!
+
 
 int main() {
     fio();
-    int n;
-    cin>>n;
-    vector<pii> a(n);
-    for (auto &[x,y]:a) cin>>x>>y;
-    pii b;
+    double d[MAX][33];
+    for (int i=0; i<MAX; i++) {
+        for (int j=0; j<33; j++) {
+            d[i][j]=(double)INF;
+        }
+    }    
+    
+    int b,n;
+    cin>>b>>n;
+    double a[MAX]={0.0}, p[MAX]={0.0}, ps[MAX]={0.0};
 
-    int dx[]={1,-1,0,0}, dy[]={0,0,1,-1};
-    vector<ll> d;
-    for (auto [x,y]:a) {
-        ll t=abs(x-b.F)+abs(y-b.S);
-        d.pb(t);
+    for (int i=1; i<=n; i++) {
+        cin>>a[i];
+        p[i]=p[i-1]+a[i];
+        ps[i]=ps[i-1]+a[i]*a[i];
     }
 
-    for (int i=0; i<4; i++) {
-        pii c={b.F+dx[i], b.S+dy[i]};
-        for (int j=0; j<n; j++) {
-            ll nd=abs(c.F-a[j].F)+abs(c.S-a[j].S);
-            if (nd<)
+    d[0][0]=0;
+    for (int i=1; i<=n; i++) {
+        for (int k=1; k<=i; k++) {
+            for (int j=1; j<=min(b,i); j++) {
+                double sse=(ps[i]-ps[i-k])-(p[i]-p[i-k])*(p[i]-p[i-k])/(double)k;
+                d[i][j]=min(d[i][j], d[i-k][j-1]+sse);
+            }
         }
     }
+
+    double ans=(double)INF;
+    for (int j=1; j<=min(b,n); j++) {
+        ans=min(ans, d[n][j]);
+    }
+
+    cout<<fixed;
+    cout.precision(10);
+    cout<<ans;
     return 0;
 }

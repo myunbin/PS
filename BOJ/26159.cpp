@@ -33,28 +33,40 @@ const ll MOD = 1e9+7;
 const int INF = 0x3f3f3f3f;
 const ll LINF = 0x3f3f3f3f3f3f3f3f;
 const int MAX = 101010; // PLZ CHK!
+int n;
+vector<int> g[MAX];
+ll cld[MAX];
+vector<ll> ed;
+void dfs(int cur, int prv) {
+    cld[cur]=1;
+    for (int nxt:g[cur]) {
+        if (nxt==prv) continue;
+        dfs(nxt, cur);
+        cld[cur]+=cld[nxt];
+    }
+    if (prv!=0) {
+        ed.pb(1ll*cld[cur]*(n-cld[cur]));
+    }
+}
 
 int main() {
     fio();
-    int n;
     cin>>n;
-    vector<pii> a(n);
-    for (auto &[x,y]:a) cin>>x>>y;
-    pii b;
-
-    int dx[]={1,-1,0,0}, dy[]={0,0,1,-1};
-    vector<ll> d;
-    for (auto [x,y]:a) {
-        ll t=abs(x-b.F)+abs(y-b.S);
-        d.pb(t);
+    for (int i=0; i<n-1; i++) {
+        int u,v; 
+        cin>>u>>v;
+        g[u].pb(v), g[v].pb(u);
     }
+    vector<ll> w(n-1);
+    for (ll &x:w) cin>>x;
+    dfs(1,0);
 
-    for (int i=0; i<4; i++) {
-        pii c={b.F+dx[i], b.S+dy[i]};
-        for (int j=0; j<n; j++) {
-            ll nd=abs(c.F-a[j].F)+abs(c.S-a[j].S);
-            if (nd<)
-        }
+    sort(all(ed)), sort(all(w), greater<>());
+    ll ans=0;
+    for (int i=0; i<n-1; i++) {
+        ll t=(ed[i]%MOD)*(w[i]%MOD)%MOD;
+        ans=(ans+t)%MOD;
     }
+    cout<<ans;
     return 0;
 }
