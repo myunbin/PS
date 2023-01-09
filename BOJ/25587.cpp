@@ -34,63 +34,60 @@ const int INF = 0x3f3f3f3f;
 const ll LINF = 0x3f3f3f3f3f3f3f3f;
 const int MAX = 101010; // PLZ CHK!
 
-struct edge{
-    int v,w,i;
-};
+int p[MAX], ps[MAX], pa[MAX], pb[MAX];
+int a[MAX], b[MAX];
+int cur;
 
-int n;
-vector<edge> g[MAX];
-
-int dfs(int cur, int prv) {
-    int ret=0;
-    for (auto [nxt, cst, idx]:g[cur]) {
-        if (nxt==prv) continue;
-        ret+=dfs(nxt, cur)+cst;
-    }
-    return ret;
+int fd(int a) {
+    if (p[a]==a) return a;
+    return p[a]=fd(p[a]);
 }
 
-int d[MAX];
-
-void dfs2(int cur, int prv) {
-    for (auto [nxt, cst, idx]:g[cur]) {
-        if (nxt==prv) continue;
-        if (!cst) d[nxt]=d[cur]+1;
-        else d[nxt]=d[cur]-1;
-        dfs2(nxt, cur);
+bool mg(int a, int b) {
+    a=fd(a), b=fd(b);
+    if (a==b) return 0;
+    
+    if (pa[a]+pa[b]>=pb[a]+pb[b]) {
+        if (pa[a]<pb[a]) cur-=ps[a];
+        if (pa[b]<pb[b]) cur-=ps[b];
     }
+    else {
+        if (pa[a]>=pb[a]) cur+=ps[a];
+        if (pa[b]>=pb[b]) cur+=ps[b];
+    }
+
+    ps[a]+=ps[b];
+    pa[a]+=pa[b];
+    pb[a]+=pb[b];
+    p[b]=a;
+    
+    return 1;
 }
 
-
-int ans[MAX];
-
-void dfs3(int cur, int prv) {
-    for (auto [nxt, cst, idx]:g[cur]) {
-        if (nxt==prv) continue;
-        ans[idx]=cst;
-        dfs3(nxt, cur);
-    }
-}
 
 int main() {
     fio();
+    for (int i=0; i<MAX; i++) p[i]=i, ps[i]=1;
 
-    cin>>n;
-    for (int i=0; i<n-1; i++) {
-        int u,v;
-        cin>>u>>v;
-        g[u].pb({v,0,i});
-        g[v].pb({u,1,i});
+    int n,m;
+    cin>>n>>m;
+
+    for (int i=1; i<=n; i++) cin>>pa[i];
+    for (int i=1; i<=n; i++) cin>>pb[i];
+    for (int i=1; i<=n; i++) cur+=(pb[i]>pa[i]);
+
+    while (m--) {
+        int x; cin>>x;
+        if (x==2) cout<<cur<<endl;
+        else {
+            int y,z;
+            cin>>y>>z;
+            mg(y,z);
+            // y=fd(y);
+            // cout<<ps[y]<<sp<<pa[y]<<sp<<pb[y]<<sp<<cur<<endl;
+        }
     }
+    
 
-    memset(d,-1,sizeof d);
-    d[1]=dfs(1,0);
-    
-    dfs2(1,0);
-    
-    int mi=min_element(d+1, d+n+1)-d;
-    dfs3(mi, 0);
-    
-    for (int i=0; i<n-1; i++) cout<<ans[i];
     return 0;
 }

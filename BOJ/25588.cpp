@@ -34,63 +34,37 @@ const int INF = 0x3f3f3f3f;
 const ll LINF = 0x3f3f3f3f3f3f3f3f;
 const int MAX = 101010; // PLZ CHK!
 
-struct edge{
-    int v,w,i;
-};
+int n,k,a[MAX],c[MAX],d[MAX];
 
-int n;
-vector<edge> g[MAX];
+int go1(int i) {
+    if (i>=n) return 0;
+    int &ret=c[i];
+    if (ret!=-1) return ret;
 
-int dfs(int cur, int prv) {
-    int ret=0;
-    for (auto [nxt, cst, idx]:g[cur]) {
-        if (nxt==prv) continue;
-        ret+=dfs(nxt, cur)+cst;
-    }
+    ret=1;
+    if (i+1<n && abs(a[i]-a[i+1])==1) ret+=go1(i+1);
     return ret;
 }
 
-int d[MAX];
+int go2(int i) {
+    if (i>=n) return 0;
+    int &ret=d[i];
+    if (ret!=-1) return ret;
 
-void dfs2(int cur, int prv) {
-    for (auto [nxt, cst, idx]:g[cur]) {
-        if (nxt==prv) continue;
-        if (!cst) d[nxt]=d[cur]+1;
-        else d[nxt]=d[cur]-1;
-        dfs2(nxt, cur);
-    }
-}
-
-
-int ans[MAX];
-
-void dfs3(int cur, int prv) {
-    for (auto [nxt, cst, idx]:g[cur]) {
-        if (nxt==prv) continue;
-        ans[idx]=cst;
-        dfs3(nxt, cur);
-    }
+    ret=INF;
+    if (go1(i)>=k) ret=min(ret, 1+go2(i+k));
+    for (int j=1; j<=3; j++) ret=min(ret, 1+go2(i+j));
+    return ret;
 }
 
 int main() {
     fio();
-
-    cin>>n;
-    for (int i=0; i<n-1; i++) {
-        int u,v;
-        cin>>u>>v;
-        g[u].pb({v,0,i});
-        g[v].pb({u,1,i});
-    }
-
+    memset(c,-1,sizeof c);
     memset(d,-1,sizeof d);
-    d[1]=dfs(1,0);
-    
-    dfs2(1,0);
-    
-    int mi=min_element(d+1, d+n+1)-d;
-    dfs3(mi, 0);
-    
-    for (int i=0; i<n-1; i++) cout<<ans[i];
+    cin>>n>>k;
+    for (int i=0; i<n; i++) cin>>a[i]; 
+
+    cout<<go2(0);
+
     return 0;
 }

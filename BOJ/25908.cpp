@@ -32,65 +32,20 @@ typedef pair<double, int> pdi;
 const ll MOD = 1e9+7;
 const int INF = 0x3f3f3f3f;
 const ll LINF = 0x3f3f3f3f3f3f3f3f;
-const int MAX = 101010; // PLZ CHK!
+const int MAX = 10101010; // PLZ CHK!
 
-struct edge{
-    int v,w,i;
-};
-
-int n;
-vector<edge> g[MAX];
-
-int dfs(int cur, int prv) {
-    int ret=0;
-    for (auto [nxt, cst, idx]:g[cur]) {
-        if (nxt==prv) continue;
-        ret+=dfs(nxt, cur)+cst;
+ll f(int x) {
+    ll ret=0;
+    for (int i=1; i<=x; i++) {
+        if (i&1) ret-=(x/i);
+        else ret+=(x/i);
     }
     return ret;
 }
-
-int d[MAX];
-
-void dfs2(int cur, int prv) {
-    for (auto [nxt, cst, idx]:g[cur]) {
-        if (nxt==prv) continue;
-        if (!cst) d[nxt]=d[cur]+1;
-        else d[nxt]=d[cur]-1;
-        dfs2(nxt, cur);
-    }
-}
-
-
-int ans[MAX];
-
-void dfs3(int cur, int prv) {
-    for (auto [nxt, cst, idx]:g[cur]) {
-        if (nxt==prv) continue;
-        ans[idx]=cst;
-        dfs3(nxt, cur);
-    }
-}
-
 int main() {
     fio();
-
-    cin>>n;
-    for (int i=0; i<n-1; i++) {
-        int u,v;
-        cin>>u>>v;
-        g[u].pb({v,0,i});
-        g[v].pb({u,1,i});
-    }
-
-    memset(d,-1,sizeof d);
-    d[1]=dfs(1,0);
-    
-    dfs2(1,0);
-    
-    int mi=min_element(d+1, d+n+1)-d;
-    dfs3(mi, 0);
-    
-    for (int i=0; i<n-1; i++) cout<<ans[i];
+    int s,t;
+    cin>>s>>t;
+    cout<<f(t)-f(s-1);
     return 0;
 }

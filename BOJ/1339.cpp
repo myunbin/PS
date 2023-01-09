@@ -34,63 +34,27 @@ const int INF = 0x3f3f3f3f;
 const ll LINF = 0x3f3f3f3f3f3f3f3f;
 const int MAX = 101010; // PLZ CHK!
 
-struct edge{
-    int v,w,i;
-};
-
-int n;
-vector<edge> g[MAX];
-
-int dfs(int cur, int prv) {
-    int ret=0;
-    for (auto [nxt, cst, idx]:g[cur]) {
-        if (nxt==prv) continue;
-        ret+=dfs(nxt, cur)+cst;
-    }
-    return ret;
-}
-
-int d[MAX];
-
-void dfs2(int cur, int prv) {
-    for (auto [nxt, cst, idx]:g[cur]) {
-        if (nxt==prv) continue;
-        if (!cst) d[nxt]=d[cur]+1;
-        else d[nxt]=d[cur]-1;
-        dfs2(nxt, cur);
-    }
-}
-
-
-int ans[MAX];
-
-void dfs3(int cur, int prv) {
-    for (auto [nxt, cst, idx]:g[cur]) {
-        if (nxt==prv) continue;
-        ans[idx]=cst;
-        dfs3(nxt, cur);
-    }
-}
-
 int main() {
     fio();
-
+    int n;
     cin>>n;
-    for (int i=0; i<n-1; i++) {
-        int u,v;
-        cin>>u>>v;
-        g[u].pb({v,0,i});
-        g[v].pb({u,1,i});
+    
+    vector<ll> a(30);
+    for (int i=0; i<n; i++) {
+        string s;
+        cin>>s;
+        reverse(all(s));
+        ll d=1;
+        for (char c:s) {
+            a[c-'A']+=d;
+            d*=10;
+        }
     }
 
-    memset(d,-1,sizeof d);
-    d[1]=dfs(1,0);
-    
-    dfs2(1,0);
-    
-    int mi=min_element(d+1, d+n+1)-d;
-    dfs3(mi, 0);
-    
-    for (int i=0; i<n-1; i++) cout<<ans[i];
+    sort(all(a), greater<>());
+    ll cur=9, ans=0;
+    for (int i=0; i<10; i++) ans+=(cur--)*a[i];
+
+    cout<<ans;
     return 0;
 }
