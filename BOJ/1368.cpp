@@ -32,12 +32,16 @@ typedef pair<double, int> pdi;
 const ll MOD = 1e9+7;
 const int INF = 0x3f3f3f3f;
 const ll LINF = 0x3f3f3f3f3f3f3f3f;
-const int MAX = 1010101; // PLZ CHK!
+const int MAX = 333; // PLZ CHK!
+
+struct edge {
+    int u,v; ll w;
+};
 
 int p[MAX];
 
 int fd(int a) {
-    if (a==p[a]) return p[a];
+    if (a==p[a]) return a;
     return p[a]=fd(p[a]);
 }
 
@@ -47,40 +51,39 @@ bool mg(int a, int b) {
     p[b]=a; return 1;
 }
 
-ll f[MAX];
-
-void init() {
-    for (int i=0; i<MAX; i++) p[i]=i;
-
-    f[0]=1, f[1]=1;
-    for (int i=2; i<MAX; i++) {
-        f[i]=(f[i-1]+f[i-2])%MOD;
-    }
-}
 int main() {
     fio();
-    
-    init();
-    
-    int n,q;
-    cin>>n>>q;
-    vector<pii> qry(q);
-    for (auto &[s,e]:qry) cin>>s>>e;
-    reverse(all(qry));
+    for (int i=0; i<MAX; i++) p[i]=i;
 
-    vector<int> idx(n+1);
-    for (auto [s,e]:qry) {
-        int cur=fd(e);
-        while (cur>=s) {
-            idx[cur]=s;
-            mg(cur-1, cur);
-            cur=fd(cur);
+    int n;
+    cin>>n;
+    vector<edge> e;
+    for (int i=1; i<=n; i++) {
+        ll x; cin>>x;
+        e.pb({0,i,x});
+    }
+    for (int i=1; i<=n; i++) {
+        for (int j=1; j<=n; j++) {
+            ll x; cin>>x;
+            if (i>=j) continue;
+            e.pb({i,j,x});
         }
     }
+    sort(all(e), [](edge a, edge b){
+        auto [au,av,aw]=a; auto [bu,bv,bw]=b;
+        return aw<bw;
+    });
 
-    for (int i=1; i<=n; i++) {
-        if (!idx[i]) cout<<0<<sp;
-        else cout<<f[i-idx[i]+1]<<sp;    
+    int cnt=0;
+    ll ans=0;
+    for (auto [u,v,w]:e) {
+        if (cnt==n) break;
+        if (mg(u,v)) {
+            cnt++;
+            ans+=w;
+        }
     }
+    cout<<ans;
+    
     return 0;
 }

@@ -32,55 +32,55 @@ typedef pair<double, int> pdi;
 const ll MOD = 1e9+7;
 const int INF = 0x3f3f3f3f;
 const ll LINF = 0x3f3f3f3f3f3f3f3f;
-const int MAX = 1010101; // PLZ CHK!
+const int MAX = 101010; // PLZ CHK!
 
+vector<int> g[MAX], gi[MAX];
+bool v[MAX], f[MAX];
 int p[MAX];
+vector<int> cyl;
 
-int fd(int a) {
-    if (a==p[a]) return p[a];
-    return p[a]=fd(p[a]);
+void dfs1(int cur) {
+    v[cur]=1;
+    for (int nxt:g[cur]) {
+        if (v[nxt]) {
+            if (!f[nxt]) cyl.pb(nxt);
+            continue;
+        }
+        dfs1(nxt);
+    }
+    f[cur]=1;
 }
 
-bool mg(int a, int b) {
-    a=fd(a), b=fd(b);
-    if (a==b) return 0;
-    p[b]=a; return 1;
-}
-
-ll f[MAX];
-
-void init() {
-    for (int i=0; i<MAX; i++) p[i]=i;
-
-    f[0]=1, f[1]=1;
-    for (int i=2; i<MAX; i++) {
-        f[i]=(f[i-1]+f[i-2])%MOD;
+void dfs2(int cur) {
+    v[cur]=1;
+    for (int nxt:gi[cur]) {
+        if (v[nxt]) continue;
+        dfs2(nxt);
     }
 }
+
 int main() {
     fio();
-    
-    init();
-    
-    int n,q;
-    cin>>n>>q;
-    vector<pii> qry(q);
-    for (auto &[s,e]:qry) cin>>s>>e;
-    reverse(all(qry));
-
-    vector<int> idx(n+1);
-    for (auto [s,e]:qry) {
-        int cur=fd(e);
-        while (cur>=s) {
-            idx[cur]=s;
-            mg(cur-1, cur);
-            cur=fd(cur);
-        }
+    int n,m;
+    cin>>n>>m;
+    for (int i=0; i<m; i++) {
+        int u,v;
+        cin>>u>>v;
+        g[u].pb(v), gi[v].pb(u);
     }
 
     for (int i=1; i<=n; i++) {
-        if (!idx[i]) cout<<0<<sp;
-        else cout<<f[i-idx[i]+1]<<sp;    
+        if (!v[i]) dfs1(i);
     }
+    fill(v, v+MAX, 0);
+
+    for (int x:cyl) {
+        if (!v[x]) dfs2(x);        
+    }
+
+    int ans=n;
+    for (int i=1; i<=n; i++) ans-=v[i];
+
+    cout<<ans;
     return 0;
 }

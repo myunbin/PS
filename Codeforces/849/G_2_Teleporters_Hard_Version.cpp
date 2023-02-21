@@ -32,55 +32,56 @@ typedef pair<double, int> pdi;
 const ll MOD = 1e9+7;
 const int INF = 0x3f3f3f3f;
 const ll LINF = 0x3f3f3f3f3f3f3f3f;
-const int MAX = 1010101; // PLZ CHK!
+const int MAX = 101010; // PLZ CHK!
 
-int p[MAX];
-
-int fd(int a) {
-    if (a==p[a]) return p[a];
-    return p[a]=fd(p[a]);
-}
-
-bool mg(int a, int b) {
-    a=fd(a), b=fd(b);
-    if (a==b) return 0;
-    p[b]=a; return 1;
-}
-
-ll f[MAX];
-
-void init() {
-    for (int i=0; i<MAX; i++) p[i]=i;
-
-    f[0]=1, f[1]=1;
-    for (int i=2; i<MAX; i++) {
-        f[i]=(f[i-1]+f[i-2])%MOD;
+void solve() {
+    int n; ll c;
+    cin>>n>>c;
+    vector<pll> a(n+1);
+    a[0]={0,0};
+    for (int i=1; i<=n; i++) {
+        ll x;
+        cin>>x;
+        a[i]={x+min(i,n+1-i), x+i};
     }
+
+    sort(all(a));
+    vector<ll> p(n+1);
+    for (int i=1; i<=n; i++) p[i]=p[i-1]+a[i].F;
+
+    int ans=0;
+    for (int i=1; i<=n; i++) {
+        ll nc=c-a[i].S;
+        int le=0, ri=n;
+        int mx=0;
+
+        while (le<=ri) {
+            int md=(le+ri)>>1;
+            ll cur=p[md];
+            int nw=md+1;
+            
+            if (i<=md) {
+                cur-=a[i].F;
+                nw--;
+            }
+            
+            if (cur<=nc) {
+                mx=max(mx, nw);
+                le=md+1;
+            }
+            else {
+                ri=md-1;
+            }
+        }
+        ans=max(ans, mx);
+    }
+
+    cout<<ans<<endl;
 }
 int main() {
     fio();
-    
-    init();
-    
-    int n,q;
-    cin>>n>>q;
-    vector<pii> qry(q);
-    for (auto &[s,e]:qry) cin>>s>>e;
-    reverse(all(qry));
-
-    vector<int> idx(n+1);
-    for (auto [s,e]:qry) {
-        int cur=fd(e);
-        while (cur>=s) {
-            idx[cur]=s;
-            mg(cur-1, cur);
-            cur=fd(cur);
-        }
-    }
-
-    for (int i=1; i<=n; i++) {
-        if (!idx[i]) cout<<0<<sp;
-        else cout<<f[i-idx[i]+1]<<sp;    
-    }
+    int t;
+    cin>>t;
+    while (t--) solve();
     return 0;
 }
