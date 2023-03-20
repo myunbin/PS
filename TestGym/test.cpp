@@ -34,13 +34,7 @@ const int INF = 0x3f3f3f3f;
 const ll LINF = 0x3f3f3f3f3f3f3f3f;
 const int MAX = 101010; // PLZ CHK!
 
-void solve() {
-    
-}
 int main() {
     fio();
-    int t;
-    cin>>t;
-    while (t--) solve();
     return 0;
 }

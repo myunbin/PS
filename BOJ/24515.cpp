@@ -39,26 +39,23 @@ int n;
 char m[MAX][MAX];
 vector<int> a(2);
 vector<pii> g[MAX*MAX*2];
-bool v[MAX][MAX];
 int ii[MAX][MAX];
-vector<pii> ed;
+set<pii> ed;
 
 void dfs(int x, int y, int id) {
     ii[x][y]=id;
-    v[x][y]=1;
     a[id]++;
     for (int i=0; i<4; i++) {
         int nx=x+dx[i], ny=y+dy[i];
         if (0>nx||nx>n+1||0>ny||ny>n+1) continue;
-        if (!v[nx][ny] && m[x][y]==m[nx][ny]) dfs(nx,ny,id);
+        if (ii[nx][ny]==-1 && m[x][y]==m[nx][ny]) dfs(nx,ny,id);
     }
 }
 
 void dij() {
     priority_queue<pii,vector<pii>,greater<pii>> pq;
     int d[MAX*MAX*2];
-    bool vst[MAX*MAX*2]={0};
-    memset(d,INF,sizeof d);
+    fill(d, d+MAX*MAX*2, INF);
     
     d[0]=0;
     pq.push({0,0});
@@ -94,26 +91,31 @@ int main() {
     dfs(2,0,0),dfs(0,2,1);
     for (int i=1; i<=n; i++) {
         for (int j=1; j<=n; j++) {
-            if (!v[i][j] && m[i][j]!='x' && m[i][j]!='.') {
+            if (ii[i][j]==-1 && m[i][j]!='x' && m[i][j]!='.') {
                 a.pb(0);
                 dfs(i,j,sz(a)-1);
             }
         }
     }
     
+    
+
     for (int i=0; i<=n+1; i++) {
         for (int j=0; j<=n+1; j++) {
             if (m[i][j]=='x'||m[i][j]=='.') continue;
             for (int k=0; k<8; k++) {
                 int ni=i+dx[k],nj=j+dy[k];
                 if (0>ni||ni>n+1||0>nj||nj>n+1||m[ni][nj]=='x'||m[ni][nj]=='.') continue;
-                if (m[i][j]!=m[ni][nj]) ed.pb({ii[i][j],ii[ni][nj]});
+                if (m[i][j]!=m[ni][nj]) {
+                    int u=ii[i][j], v=ii[ni][nj];
+                    ed.insert({u,v});
+                }
             }
         }
     }
-    cmprs(ed);
 
-    for (int i=0; i<sz(a); i++) g[i<<1].pb({i<<1|1,(i==0||i==1?0:a[i])});
+    int sz=sz(a);
+    for (int i=0; i<sz; i++) g[i<<1].pb({i<<1|1,(i==0||i==1?0:a[i])});
     
     for (auto [s,e]:ed) {
         s=s<<1|1, e=e<<1;

@@ -34,26 +34,51 @@ const int INF = 0x3f3f3f3f;
 const ll LINF = 0x3f3f3f3f3f3f3f3f;
 const int MAX = 101010; // PLZ CHK!
 
-vector<ll> len;
+const ll MX=1000000000000000000;
+int sz;
+vector<ll> d;
 void init() {
-    len.pb(0), len.pb(2), len.pb(2);
-    while (len.back()<LINF) {
-        len.pb(len[sz(len)-1]+len[sz(len)-2]+2);
+    d.pb(0), d.pb(2), d.pb(2);
+    while (d.back()<MX) {
+        int sz=sz(d);
+        d.pb(d[sz-2]+d[sz-1]+2);
     }
-    cout<<sz(len);
+    sz=sz(d)-1;
+    d.pb(d[sz-1]+d[sz]+2);
 }
 
-int go(ll k) {
+void ans(ll n, ll k) {
+    if (k==1) {
+        cout<<'('<<endl;
+        return;
+    }
+    if (k==d[n]) {
+        cout<<')'<<endl;
+        return;
+    }
 
+    if (1<k && k<=1+d[n-2]) ans(n-2, k-1);
+    else ans(n-1, k-(1+d[n-2]));
 }
 
 void solve() {
     ll n,k;
     cin>>n>>k;
-    
-    if (n>sz(len)) {
-        
+    if (n<=sz && d[n]<k) {
+        cout<<0<<endl;
+        return;
     }
+
+    if (n>sz) {
+        ll x=(n-sz)/2;
+        n-=2*x, k-=x;
+        if (k<=0) {
+            cout<<'('<<endl;
+            return;
+        }
+    }
+
+    ans(n,k);
 }
 
 int main() {

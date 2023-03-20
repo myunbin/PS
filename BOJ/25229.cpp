@@ -34,45 +34,38 @@ const int INF = 0x3f3f3f3f;
 const ll LINF = 0x3f3f3f3f3f3f3f3f;
 const int MAX = 5050; // PLZ CHK!
 
-int n, v[MAX];
-vector<int> g[MAX];
-vector<int> c[MAX];
+int n,a[MAX],d[MAX][MAX<<1];
+vector<int> g[MAX],v[MAX<<1];
 
 void dfs(int cur, int prv) {
+    for (int x=2; x<(MAX<<1); x++) {
+        if (a[cur]==x) continue;
+        d[cur][x]=x;
+    }
+
     for (int nxt:g[cur]) {
         if (nxt==prv) continue;
-        c[cur].pb(nxt);
-        dfs(nxt, cur);        
-    }
-}
-
-int d[MAX][MAX<<1];
-vector<int> dv[MAX<<1];
-
-int go(int i, int j) {
-    int &ret=d[i][j];
-    if (ret!=-1) return ret;
-
-    ret=(v[i]==j?0:j);
-    for (int k:c[i]) {
-        int t=INF;
-        if (gcd(j, v[k])!=1) t=min(t,go(k, v[k]));
-        for (int l:dv[j]) {
-            t=min(t, go(k,l));
+        dfs(nxt, cur);
+        for (int x=2; x<(MAX<<1); x++) {
+            int t=2*n;
+            for (int y:v[x]) {
+                t=min(t, d[nxt][y]);
+            }
+            d[cur][x]+=t;
         }
-        ret+=t;
     }
-    return ret;
+
+    for (int x=2; x<(MAX<<1); x++) {
+        for (int y:v[x]) {
+            d[cur][y]=min(d[cur][y], d[cur][x]);
+        }
+    }
 }
 
 void init() {
     for (int i=2; i<(MAX<<1); i++) {
-        dv[i].pb(i);
-        for (int j=2; j*j<=i; j++) {
-            if (i%j==0) {
-                dv[i].pb(j);
-                if (j*j!=i) dv[i].pb(i/j);
-            }
+        for (int j=i; j<(MAX<<1); j+=i) {
+            v[j].pb(i);
         }
     }
 }
@@ -80,21 +73,18 @@ void init() {
 int main() {
     fio();
     init();
-    memset(d,-1,sizeof d);
-
     cin>>n;
-    for (int i=1; i<=n; i++) cin>>v[i];
-    for (int i=0; i<n-1; i++) {
-        int a,b;
-        cin>>a>>b;
-        g[a].pb(b), g[b].pb(a);
-    }    
-
-    dfs(1, -1);
-    int ans=(n<<1);
-    for (int i=2; i<=10000; i++) {
-        ans=min(ans, go(1,i));
+    for (int i=1; i<=n; i++) cin>>a[i];
+    for (int i=1; i<n; i++) {
+        int u,v; cin>>u>>v;
+        g[u].pb(v), g[v].pb(u);
     }
+
+    dfs(1,0);
+    int ans=2*n;
+    for (int i=2; i<(MAX<<1); i++) ans=min(ans, d[1][i]);
+
     cout<<ans;
+
     return 0;
-} 
+}
