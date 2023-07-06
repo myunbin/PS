@@ -48,7 +48,7 @@ void solve() {
     pii cur=st, fd=ed;
     int di=dir[d];
     
-    int x=n+m+10;
+    int x=2*(n+m)+1;
     int cnt=0;
     while (x--) {
         pii nxt;
@@ -56,8 +56,8 @@ void solve() {
         if (di==0) { //DR
             int d=cur.F-cur.S;
             pii c1={n,n-d}, c2={m+d,m};
-            if (c1==pii(n,m) || c2==pii(n,m)) {
-                nxt=pii(n,m);
+            if (in(c1) && in(c2)) {
+                nxt=c1;
                 nd=3;
             }
             else if (in(c1)) {
@@ -72,8 +72,8 @@ void solve() {
         else if (di==1) { //DL
             int d=cur.F+cur.S;
             pii c1={n,d-n}, c2={d-1,1};
-            if (c1==pii(n,1) || c2==pii(n,1)) {
-                nxt=pii(n,1);
+            if (in(c1) && in(c2)) {
+                nxt=c1;
                 nd=2;
             }
             else if (in(c1)) {
@@ -88,8 +88,8 @@ void solve() {
         else if (di==2) {
             int d=cur.F+cur.S;
             pii c1={1,d-1}, c2={d-m,m};
-            if (c1==pii(1,m) || c2==pii(1,m)) {
-                nxt=pii(1,m);
+            if (in(c1) && in(c2)) {
+                nxt=c1;
                 nd=1;
             }
             else if (in(c1)) {
@@ -104,8 +104,8 @@ void solve() {
         else {
             int d=cur.F-cur.S;
             pii c1={1,1-d}, c2={d+1,1};
-            if (c1==pii(1,1) || c2==pii(1,1)) {
-                nxt=pii(1,1);
+            if (in(c1)&&in(c2)) {
+                nxt=c1;
                 nd=0;
             }
             else if (in(c1)) {

@@ -36,24 +36,29 @@ const int MAX = 10101; // PLZ CHK!
 
 int v,e;
 vector<int> g[MAX];
-int cnt=1, dn[MAX], dm[MAX], rt[MAX], cd[MAX], ans[MAX];
+int cnt=1, dn[MAX], dm[MAX], cd[MAX];
 
+int rt;
+set<int> ans;
 void dfs(int cur, int prv) {
     dn[cur]=dm[cur]=cnt++;
+    int cld=0;
 
     for (int nxt:g[cur]) {
         if (nxt==prv) continue;
 
         if (dn[nxt]>0) dm[cur]=min(dm[cur], dn[nxt]);
         else {
-            cd[cur]++;
+            cld++;
             dfs(nxt, cur);
             dm[cur]=min(dm[cur], dm[nxt]);
-            if (dn[cur]<=dm[nxt]) {
-                ans[cur]=1;
+            if (dn[cur]<=dm[nxt] && cur!=rt) {
+                ans.insert(cur);
             }
         }
     }
+
+    if (cur==rt && cld>1) ans.insert(cur);
 }
 
 int main() {
@@ -67,19 +72,13 @@ int main() {
 
     for (int i=1; i<=v; i++) {
         if (!dn[i]) {
-            rt[i]=1;
+            rt=i;
             dfs(i,0);
         }
     }
 
-    vector<int> res;
-    for (int i=1; i<=v; i++) {
-        if (rt[i] && cd[i]>1) res.pb(i);
-        else if (!rt[i] && ans[i]) res.pb(i);
-    }
-
-    cout<<sz(res)<<endl;
-    for (int x:res) cout<<x<<sp;
+    cout<<sz(ans)<<endl;
+    for (int x:ans) cout<<x<<sp;
 
     return 0;
 }
