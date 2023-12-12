@@ -39,6 +39,7 @@ ll d[MAX][MAX], d2[MAX][MAX];
 string s;
 
 ll go(int i, int j);
+void solve();
 ll go2(int i, int j);
 
 ll go2(int i, int j) {
