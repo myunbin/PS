@@ -29,71 +29,85 @@ typedef tuple<ll, ll, ll> tpl;
 typedef pair<double, ll> pdl;
 typedef pair<double, int> pdi;
 
+const int dx[] = {1,-1,0,0,1,1,-1,-1};
+const int dy[] = {0,0,1,-1,1,-1,1,-1};
 const ll MOD = 1e9+7;
 const int INF = 0x3f3f3f3f;
 const ll LINF = 0x3f3f3f3f3f3f3f3f;
-const int MAX = 101010; // PLZ CHK!
+const int MAX = (1<<10)+50; // PLZ CHK!
 
-//AWARE of..
-//1. type of query - might be max, min, gcd.. etc
-//2. policy of update - tr[nd] = eg. max(tr[nd], v)
 struct SEG{
     //0-indexed!
-    vector<ll> tr, a;
+    int tr[3030];
     int n;
-    void rst(int sz) {
-        n = sz;
-        tr.resize((n+1)<<2);
-        a.resize(n+1);
+    void rst(int sz) {for (n=1; n<sz; n<<=1);}
+
+    void upd(int i, int v) {
+        tr[i+n]=v; i+=n; //AWARE OF UPD POLICY!!
+        for (i>>=1; i; i>>=1) tr[i]=tr[i<<1]+tr[i<<1|1];
     }
-    void init(int nd, int le, int ri) {
-        if (le==ri) {
-            tr[nd] = a[le];
-            return;
+
+    int qry(int l, int r) {
+        int ret=0;
+        for (l+=n, r+=n; l<=r; l>>=1, r>>=1) {
+            if (l&1) ret+=tr[l++];
+            if (~r&1) ret+=tr[r--];
         }
-        int md = le+ri>>1;
-        init(nd<<1, le, md), init(nd<<1|1, md+1, ri);
-        tr[nd] = tr[nd<<1]+tr[nd<<1|1];
-    }
-    void upd(int nd, int le, int ri, int i, ll v) {
-        if (i<le || ri<i) return;
-        if (le==ri) {
-            tr[nd] = v;
-            return;
-        }
-        int md = le+ri>>1;
-        upd(nd<<1, le, md, i, v), upd(nd<<1|1, md+1, ri, i, v);
-        tr[nd] = tr[nd<<1]+tr[nd<<1|1];
-    }
-    void upd(int i, ll v) {
-        upd(1, 0, n-1, i, v);
-    }
-    ll qry(int nd, int le, int ri, int ql, int qr) {
-        if (qr<le || ri<ql) return 0;
-        if (ql<=le && ri<=qr) return tr[nd];
-        int md = le+ri>>1;
-        return qry(nd<<1, le, md, ql, qr)+qry(nd<<1|1, md+1, ri, ql, qr);
-    }
-    ll qry(int le, int ri) {
-        return qry(1, 0, n-1, le, ri);
+        return ret;
     }
 };
 
+struct seg2d {
+    SEG tr[3030];
+    int n;
+    void rst(int sx, int sy) {
+        for (n=1; n<sx; n<<=1);
+        for (int i=0; i<=2*n; i++) tr[i].rst(sy);
+    }
+
+    void upd(int i, int j, int v) {
+        tr[i+n].upd(j,v); i+=n;
+        for (i>>=1; i; i>>=1) tr[i].upd(j,tr[i<<1].qry(j,j)+tr[i<<1|1].qry(j,j));
+    }
+
+    int qry(int x1, int y1, int x2, int y2) {
+        int ret=0;
+        for (x1+=n,x2+=n; x1<=x2; x1>>=1,x2>>=1) {
+            if (x1&1) ret+=tr[x1++].qry(y1,y2);
+            if (~x2&1) ret+=tr[x2--].qry(y1,y2);
+        }
+        return ret;
+    }
+};
+
+int N,M;
+seg2d S;
 
 int main() {
     fio();
-    SEG sg[1<<10+1];
-    for (int i=1; i<=(1<<10); i++) sg[i].rst((1<<10)+1);
 
-    int n,m;
-    cin>>n>>m;
-    for (int i=1; i<=n; i++) {
-        for (int j=1; j<=n; j++) {
-            ll x; cin>>x;
-            sg[i].upd(j,x);
+    cin>>N>>M;
+    
+    S.rst(N,N);
+    for (int i=1; i<=N; i++) {
+        for (int j=1; j<=N; j++) {
+            int x; cin>>x;
+            S.upd(i,j,x);
         }
     }
 
-    
+    while (M--) {
+        int w; cin>>w;
+        if (w==0) {
+            int x,y,c;
+            cin>>x>>y>>c;
+            S.upd(x,y,c);
+        }
+        else {
+            int x1,y1,x2,y2;
+            cin>>x1>>y1>>x2>>y2;
+            cout<<S.qry(x1,y1,x2,y2)<<endl;
+        }
+    }
     return 0;
 }

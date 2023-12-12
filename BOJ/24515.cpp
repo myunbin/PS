@@ -29,99 +29,90 @@ typedef tuple<ll, ll, ll> tpl;
 typedef pair<double, ll> pdl;
 typedef pair<double, int> pdi;
 
+const int dx[] = {1,-1,0,0,1,1,-1,-1};
+const int dy[] = {0,0,1,-1,1,-1,1,-1};
 const ll MOD = 1e9+7;
 const int INF = 0x3f3f3f3f;
 const ll LINF = 0x3f3f3f3f3f3f3f3f;
 const int MAX = 1010; // PLZ CHK!
-const int dx[]={1,-1,0,0,-1,-1,1,1};
-const int dy[]={0,0,1,-1,-1,1,-1,1};
-int n;
-char m[MAX][MAX];
-vector<int> a(2);
-vector<pii> g[MAX*MAX*2];
-int ii[MAX][MAX];
-set<pii> ed;
 
-void dfs(int x, int y, int id) {
-    ii[x][y]=id;
-    a[id]++;
-    for (int i=0; i<4; i++) {
-        int nx=x+dx[i], ny=y+dy[i];
-        if (0>nx||nx>n+1||0>ny||ny>n+1) continue;
-        if (ii[nx][ny]==-1 && m[x][y]==m[nx][ny]) dfs(nx,ny,id);
-    }
-}
-
-void dij() {
-    priority_queue<pii,vector<pii>,greater<pii>> pq;
-    int d[MAX*MAX*2];
-    fill(d, d+MAX*MAX*2, INF);
-    
-    d[0]=0;
-    pq.push({0,0});
-    while (!pq.empty()) {
-        auto [dst,cur]=pq.top(); pq.pop();
-        if (dst!=d[cur]) continue;
-        for (auto [nxt,cst]:g[cur]) {
-            if (d[nxt]>d[cur]+cst) {
-                d[nxt]=d[cur]+cst;
-                pq.push({d[nxt],nxt});
-            }
-        }
-    }
-    
-    cout<<d[2];
-}
+int N;
+char A[MAX][MAX];
+int d[MAX][MAX],B[MAX][MAX],v[MAX][MAX];
 
 int main() {
     fio();
-    for (int i=0; i<MAX; i++) for (int j=0; j<MAX; j++) m[i][j]='x',ii[i][j]=-1;
-    
-    cin>>n;
-    for (int i=1; i<=n; i++) {
-        string t; cin>>t;
-        for (int j=1; j<=n; j++) {
-            m[i][j]=t[j-1];
-        }   
-    }
-    
-    for (int i=2; i<=n+1; i++) m[i][0]=m[0][i]='a';
-    for (int i=0; i<n; i++) m[n+1][i]=m[i][n+1]='a';
 
-    dfs(2,0,0),dfs(0,2,1);
-    for (int i=1; i<=n; i++) {
-        for (int j=1; j<=n; j++) {
-            if (ii[i][j]==-1 && m[i][j]!='x' && m[i][j]!='.') {
-                a.pb(0);
-                dfs(i,j,sz(a)-1);
-            }
+    for (int i=0; i<MAX; i++) for (int j=0; j<MAX; j++) d[i][j]=INF;
+
+    cin>>N;
+    for (int i=1; i<=N; i++) {
+        string s; cin>>s;
+        for (int j=1; j<=N; j++) {
+            A[i][j]=s[j-1];
         }
     }
-    
-    
 
-    for (int i=0; i<=n+1; i++) {
-        for (int j=0; j<=n+1; j++) {
-            if (m[i][j]=='x'||m[i][j]=='.') continue;
-            for (int k=0; k<8; k++) {
-                int ni=i+dx[k],nj=j+dy[k];
-                if (0>ni||ni>n+1||0>nj||nj>n+1||m[ni][nj]=='x'||m[ni][nj]=='.') continue;
-                if (m[i][j]!=m[ni][nj]) {
-                    int u=ii[i][j], v=ii[ni][nj];
-                    ed.insert({u,v});
+    for (int i=2; i<=N+1; i++) A[0][i]=A[i][0]='a';
+    for (int i=0; i<=N-1; i++) A[i][N+1]=A[N+1][i]='a';
+    A[0][0]=A[0][1]=A[1][0]=A[N][N+1]=A[N+1][N]=A[N+1][N+1]='.';
+
+    for (int i=1; i<=N; i++) {
+        for (int j=1; j<=N; j++) {
+            if (v[i][j]) continue;
+
+            queue<pii> q;
+            q.push({i,j});
+            v[i][j]=1;
+            int cnt=1;
+
+            vector<pii> t;
+            t.pb({i,j});
+            while (!q.empty()) {
+                auto [cx,cy]=q.front(); q.pop();
+                for (int i=0; i<4; i++) {
+                    int nx=cx+dx[i], ny=cy+dy[i];
+                    if (nx<1 || nx>N || ny<1 || ny>N || v[nx][ny] || A[cx][cy]!=A[nx][ny]) continue;
+                    cnt++;
+                    v[nx][ny]=1;
+                    q.push({nx,ny});
+                    t.pb({nx,ny});
                 }
             }
+
+            for (auto [x,y]:t) {
+                B[x][y]=cnt;
+            }
         }
     }
 
-    int sz=sz(a);
-    for (int i=0; i<sz; i++) g[i<<1].pb({i<<1|1,(i==0||i==1?0:a[i])});
-    
-    for (auto [s,e]:ed) {
-        s=s<<1|1, e=e<<1;
-        g[s].pb({e,0});
+    typedef array<int,3> arr;
+    priority_queue<arr, vector<arr>, greater<arr>> pq;
+    d[2][0]=0;
+    pq.push({0,2,0});
+
+    while (!pq.empty()) {
+        auto [dst,cx,cy]=pq.top(); pq.pop();
+
+        if (dst!=d[cx][cy]) continue;
+
+        for (int i=0; i<8; i++) {
+            int nx=cx+dx[i], ny=cy+dy[i];
+            if (nx<0 || nx>N+1 || ny<0 || ny>N+1 || A[nx][ny]=='.') continue;
+
+            int cst=((i<4&&A[cx][cy]==A[nx][ny])?0:B[nx][ny]);
+            if (d[nx][ny]>d[cx][cy]+cst) {
+                d[nx][ny]=d[cx][cy]+cst;
+                pq.push({d[nx][ny], nx, ny});
+            }
+        }
     }
 
-    dij();
+    int ans=INF;
+    for (int i=2; i<=N+1; i++) ans=min(ans, d[0][i]);
+    for (int i=0; i<=N-1; i++) ans=min(ans, d[i][N+1]);
+
+    cout<<ans;
+
     return 0;
 }
